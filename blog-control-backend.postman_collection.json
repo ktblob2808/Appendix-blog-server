@@ -1,0 +1,1161 @@
+{
+	"info": {
+		"_postman_id": "38088ef1-7180-43e1-a727-5502b85d759e",
+		"name": "blog-control-backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "38534693"
+	},
+	"item": [
+		{
+			"name": "about",
+			"item": [
+				{
+					"name": "get about page",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": "{{blogserver}}/api/about",
+						"description": "### Get About Information\n\nThis endpoint makes an HTTP GET request to retrieve information about URL from the blog server.\n\n#### Request Body\n\nThis request does not require a request body.\n\n#### Response\n\n- `about`: (string) Information about the blog server.\n    \n\nExample:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": \"www.goolge.com\"\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "setup about page",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"url\": \"www.google.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/about",
+						"description": "Change the about module URL\n\n### Request Body\n\n- `url`: (string) The URL for which the information is being submitted.\n    \n\n### Response\n\nThe response to the request will have a status code of 200 and a content type of \"application/json\". The response body will contain a JSON object with the following keys:\n\n- `code`: (number) A code indicating the status of the response.\n    \n- `msg`: (string) A message providing additional information about the response.\n    \n- `data`: (string) Additional data related to the submitted URL.\n    \n\n### JSON Schema for Response\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": \"www.google.com\"\n}\n\n ```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "get login data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": "{{blogserver}}/api/admin/whoami"
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//var responseJson = pm.response.json()\r",
+									"//pm.environment.set('token', responseJson.token);\r",
+									"\r",
+									"\r",
+									"pm.test(\"Get token from response header\", function () {\r",
+									"    var token = pm.response.headers.get(\"authentication\");\r",
+									"    pm.environment.set(\"token\", token);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"loginId\": \"admin\",\r\n    \"loginPwd\": \"admin123\",\r\n    \"captcha\": \"488q\",\r\n    \"remember\": 7\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/admin/login",
+						"description": "### Admin Login\n\nThis endpoint allows administrators to log in to the system.\n\n#### Request Body\n\n- `loginId` (string): The ID of the administrator.\n    \n- `loginPwd` (string): The password for the administrator's account.\n    \n- `captcha` (string): The captcha code for verification.\n    \n- `remember` (integer): The duration for which the session should be remembered.\n    \n\n#### Response\n\n- Status: 200\n    \n- Content Type: text/html"
+					},
+					"response": []
+				},
+				{
+					"name": "change login data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"admin2\",\r\n    \"loginId\": \"admin\",\r\n    \"loginPwd\": \"admin123\",\r\n    \"oldLoginPwd\": \"admin123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/admin",
+						"description": "### Update Admin Details\n\nThis endpoint is used to update the admin details on the blog server.\n\n#### Request Body\n\n- `name` (string) - The new name for the admin.\n    \n- `loginId` (string) - The login ID for the admin.\n    \n- `loginPwd` (string) - The new login password for the admin.\n    \n- `oldLoginPwd` (string) - The old login password for verification.\n    \n\n#### Response\n\nThe response for this request will be a JSON object conforming to the following schema:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": {\n        \"id\": 1,\n        \"loginId\": \"admin\",\n        \"name\": \"Administrator\"\n    }\n}\n\n ```\n\nThe `status` property indicates the status of the update operation, and the `message` property provides additional information about the operation."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "banner",
+			"item": [
+				{
+					"name": "get banner",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": "{{blogserver}}/api/banner",
+						"description": "The API endpoint `/api/banner` is a GET request that retrieves all banner data.\n\n### Response\n\nThe response is in JSON format and has the following schema:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"midImg\": \"/static/images/banner1_mid.jpg\",\n            \"bigImg\": \"/static/images/banner1_big.jpg\",\n            \"title\": \"Welcome to Claude Blog Edit\",\n            \"description\": \"A modern blogging platform for AI enthusiasts\"\n        },\n        {\n            \"id\": 2,\n            \"midImg\": \"/static/images/banner2_mid.jpg\",\n            \"bigImg\": \"/static/images/banner2_big.jpg\",\n            \"title\": \"Share Your Ideas2\",\n            \"description\": \"Connect with a community of like-minded developers\"\n        },\n        {\n            \"id\": 3,\n            \"midImg\": \"/static/images/banner3_mid.jpg\",\n            \"bigImg\": \"/static/images/banner3_big.jpg\",\n            \"title\": \"Explore AI Technologies2\",\n            \"description\": \"Discover the latest in artificial intelligence\"\n        }\n    ]\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "edit banner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n\t{\r\n\t\t\"midImg\": \"/static/images/bg1_mid.jpg\",\r\n\t\t\"bigImg\": \"/static/images/bg1_big.jpg\",\r\n\t\t\"title\": \"change title 1\",\r\n\t\t\"description\": \"Description 1\"\r\n\t},\r\n\t{\r\n\t\t\"midImg\": \"/static/images/bg2_mid.jpg\",\r\n\t\t\"bigImg\": \"/static/images/bg2_big.jpg\",\r\n\t\t\"title\": \"Banner 2\",\r\n\t\t\"description\": \"Description 2\"\r\n\t},\r\n\t{\r\n\t\t\"midImg\": \"/static/images/bg3_mid.jpg\",\r\n\t\t\"bigImg\": \"/static/images/bg3_big.jpg\",\r\n\t\t\"title\": \"Banner 3d\",\r\n\t\t\"description\": \"Description 3d\"\r\n\t}\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/banner",
+						"description": "The `POST /api/banner` endpoint is used to create a new banner or edit banner on the blog server. The request should include a JSON payload with the `midImg`, `bigImg`, `title`, and `description` fields to specify the banner details.\n\n### Request Body\n\n- `midImg` (string): The URL for the medium-sized banner image.\n    \n- `bigImg` (string): The URL for the large-sized banner image.\n    \n- `title` (string): The title of the banner.\n    \n- `description` (string): The description of the banner.\n    \n\n### Response\n\nThe response is a JSON object with the following schema:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"midImg\": \"/static/images/bg1_mid.jpg\",\n            \"bigImg\": \"/static/images/bg1_big.jpg\",\n            \"title\": \"change title 1\",\n            \"description\": \"Description 1\"\n        },\n        {\n            \"id\": 2,\n            \"midImg\": \"/static/images/bg2_mid.jpg\",\n            \"bigImg\": \"/static/images/bg2_big.jpg\",\n            \"title\": \"Banner 2\",\n            \"description\": \"Description 2\"\n        },\n        {\n            \"id\": 3,\n            \"midImg\": \"/static/images/bg3_mid.jpg\",\n            \"bigImg\": \"/static/images/bg3_big.jpg\",\n            \"title\": \"Banner 3d\",\n            \"description\": \"Description 3d\"\n        }\n    ]\n}\n\n ```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "blog",
+			"item": [
+				{
+					"name": "get blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{blogserver}}/api/blog?page=1&limit=10&keyword=vue&categoryId=1",
+							"host": [
+								"{{blogserver}}"
+							],
+							"path": [
+								"api",
+								"blog"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "paga：default 1"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "page size: default 10"
+								},
+								{
+									"key": "keyword",
+									"value": "vue",
+									"description": "search key word"
+								},
+								{
+									"key": "categoryId",
+									"value": "1"
+								}
+							]
+						},
+						"description": "The API returns a JSON response with the following schema:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": {\n        \"count\": 1,\n        \"rows\": [\n            {\n                \"id\": 3,\n                \"title\": \"test6\",\n                \"description\": \"ss\",\n                \"toc\": \"\\\"[]\\\"\",\n                \"htmlContent\": \"<h1 class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;>My Markdown Article</h1><h2 class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;>Introduction</h2><p class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;>Markdown is a lightweight markup language commonly used for formatting text. Its syntax is simple and easy to learn, making it ideal for writing documents, web pages, and emails.</p>\",\n                \"thumb\": \"/static/uploads/big_size17428282014672993.jpg\",\n                \"scanNumber\": 0,\n                \"commentNumber\": 1,\n                \"createDate\": \"1742828209420\",\n                \"categoryId\": 1,\n                \"category\": {\n                    \"id\": 1,\n                    \"name\": \"Front-end\"\n                }\n            }\n        ]\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "get single blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": "{{blogserver}}/api/blog/2",
+						"description": "### Get Blog Details\n\nThis endpoint makes an HTTP GET request to retrieve the details of a specific blog by providing the blog ID in the URL.\n\n#### Request Body\n\nThis request does not require a request body.\n\n#### Response Body\n\n- `code` (number): The status code of the response.\n    \n- `msg` (string): Any additional message related to the response.\n    \n- `data` (object): The object containing the details of the blog.\n    \n    - `id` (number): The unique identifier of the blog.\n        \n    - `title` (string): The title of the blog.\n        \n    - `description` (string): A brief description of the blog content.\n        \n    - `toc` (string): Table of contents for the blog.\n        \n    - `htmlContent` (string): The HTML content of the blog.\n        \n    - `thumb` (string): URL of the thumbnail image for the blog.\n        \n    - `scanNumber` (number): The number of scans/views for the blog.\n        \n    - `commentNumber` (number): The number of comments on the blog.\n        \n    - `createDate` (string): The date of creation of the blog.\n        \n    - `categoryId` (number): The category ID to which the blog belongs.\n        \n    - `blogType` (string): The type of blog."
+					},
+					"response": []
+				},
+				{
+					"name": "add blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"title\": \"test10\",\r\n\t\"description\": \"test\",\r\n\t\"createDate\": 1742828209420,\r\n\t\"categoryId\": 1,\r\n\t\"toc\": [],\r\n\t\"htmlContent\": \"<h1>My Markdown Article</h1><h2>Introduction</h2><p>Markdown is a lightweight markup language commonly used for formatting text. Its syntax is simple and easy to learn, making it ideal for writing documents, web pages, and emails.</p>\",\r\n\t\"thumb\": \"/static/uploads/big_size17428282014672993.jpg\",\r\n\t\"markdownContent\": \"# My Markdown Article\\n\\n## Introduction\\n\\nMarkdown is a lightweight markup language commonly used for formatting text. Its syntax is simple and easy to learn, making it ideal for writing documents, web pages, and emails.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/blog",
+						"description": "### Create Blog Post\n\nThis endpoint allows the creation of a new blog post.\n\n#### Request Body\n\n- title (string): The title of the blog post.\n    \n- description (string): A brief description of the blog post.\n    \n- createDate (number): The timestamp of the creation date.\n    \n- categoryId (number): The category ID of the blog post.\n    \n- toc (array): Table of contents for the blog post.\n    \n- htmlContent (string): The HTML content of the blog post.\n    \n- thumb (string): The URL of the thumbnail image for the blog post.\n    \n- markdownContent (string): The markdown content of the blog post.\n    \n\n#### Response\n\n- id (number): The ID of the created blog post.\n    \n- title (string): The title of the created blog post.\n    \n- description (string): The description of the created blog post.\n    \n- createDate (number): The timestamp of the creation date of the blog post.\n    \n- categoryId (number): The category ID of the blog post.\n    \n- toc (string): The table of contents of the blog post.\n    \n- htmlContent (string): The HTML content of the blog post.\n    \n- thumb (string): The URL of the thumbnail image for the blog post.\n    \n- scanNumber (number): The number of scans for the blog post.\n    \n- commentNumber (number): The number of comments for the blog post.\n    \n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"id\": {\"type\": \"number\"},\n        \"title\": {\"type\": \"string\"},\n        \"description\": {\"type\": \"string\"},\n        \"createDate\": {\"type\": \"number\"},\n        \"categoryId\": {\"type\": \"number\"},\n        \"toc\": {\"type\": \"string\"},\n        \"htmlContent\": {\"type\": \"string\"},\n        \"thumb\": {\"type\": \"string\"},\n        \"scanNumber\": {\"type\": \"number\"},\n        \"commentNumber\": {\"type\": \"number\"}\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "add blog (handle Toc)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"title\": \"Test tilte\",\r\n\t\"description\": \"abc\",\r\n\t\"createDate\": 1743092804815,\r\n\t\"categoryId\": 3,\r\n\t\"toc\": [],\r\n\t\"htmlContent\": \"<h1>The Wonders of Markdown: A Comprehensive Guide</h1><p>Markdown is a lightweight markup language that has gained immense popularity for its simplicity and effectiveness in formatting text. Originally created by John Gruber in 2004, Markdown allows writers, developers, and content creators to write using an easy-to-read and easy-to-write plain text format. This article explores the various aspects of Markdown, its syntax, applications, and benefits.</p><h2>What is Markdown?</h2><p>Markdown is designed to be a simple way to style text on the web. It converts plain text into HTML, making it ideal for creating content for websites, documentation, and even emails. Its straightforward syntax enables users to focus on writing without getting bogged down by complex formatting tools.</p><h3>Key Features of Markdown</h3><ul><li><p><strong>Simplicity</strong>: The syntax is intuitive and minimalistic, making it accessible for beginners.</p></li><li><p><strong>Portability</strong>: Markdown files are plain text, allowing them to be opened and edited in any text editor.</p></li><li><p><strong>Compatibility</strong>: Most platforms, including GitHub, Reddit, and various blogging tools, support Markdown.</p></li></ul><h2>Basic Syntax of Markdown</h2><h3>Headings</h3><p>Headings are created using the <code data-backticks=\\\"1\\\">#</code> symbol. The number of <code data-backticks=\\\"1\\\">#</code> symbols indicates the heading level:</p><div data-language=\\\"markdown\\\" class=\\\"toastui-editor-ww-code-block\\\"><pre><code data-language=\\\"markdown\\\"># This is an H1 Heading\\n## This is an H2 Heading\\n### This is an H3 Heading</code></pre></div>\",\r\n\t\"thumb\": \"/static/uploads/1743092802209-541313562.jpg\",\r\n\t\"markdownContent\": \"# The Wonders of Markdown: A Comprehensive Guide\\n\\nMarkdown is a lightweight markup language that has gained immense popularity for its simplicity and effectiveness in formatting text. Originally created by John Gruber in 2004, Markdown allows writers, developers, and content creators to write using an easy-to-read and easy-to-write plain text format. This article explores the various aspects of Markdown, its syntax, applications, and benefits.\\n\\n## What is Markdown?\\n\\nMarkdown is designed to be a simple way to style text on the web. It converts plain text into HTML, making it ideal for creating content for websites, documentation, and even emails. Its straightforward syntax enables users to focus on writing without getting bogged down by complex formatting tools.\\n\\n### Key Features of Markdown\\n\\n- **Simplicity**: The syntax is intuitive and minimalistic, making it accessible for beginners.\\n- **Portability**: Markdown files are plain text, allowing them to be opened and edited in any text editor.\\n- **Compatibility**: Most platforms, including GitHub, Reddit, and various blogging tools, support Markdown.\\n\\n## Basic Syntax of Markdown\\n\\n### Headings\\n\\nHeadings are created using the `#` symbol. The number of `#` symbols indicates the heading level:\\n\\n```markdown\\n# This is an H1 Heading\\n## This is an H2 Heading\\n### This is an H3 Heading\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/blog",
+						"description": "### Create Blog Post\n\nThis endpoint is used to create a new blog post on the server.\n\n#### Request Body\n\n- title (string): The title of the blog post.\n    \n- description (string): A brief description of the blog post.\n    \n- createDate (number): The timestamp of the blog post creation.\n    \n- categoryId (number): The category ID of the blog post.\n    \n- toc (array): Table of contents for the blog post.\n    \n- htmlContent (string): The HTML content of the blog post.\n    \n- thumb (string): The thumbnail image for the blog post.\n    \n\n#### Example Request Body\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": {\n        \"id\": 21,\n        \"title\": \"Test tilte\",\n        \"description\": \"abc\",\n        \"createDate\": 1743092804815,\n        \"categoryId\": 3,\n        \"toc\": \"[{\\\"name\\\":\\\"The Wonders of Markdown: A Comprehensive Guide\\\",\\\"anchor\\\":\\\"the-wonders-of-markdown-a-comprehensive-guide\\\",\\\"level\\\":1,\\\"children\\\":[{\\\"name\\\":\\\"What is Markdown?\\\",\\\"anchor\\\":\\\"what-is-markdown\\\",\\\"level\\\":2,\\\"children\\\":[{\\\"name\\\":\\\"Key Features of Markdown\\\",\\\"anchor\\\":\\\"key-features-of-markdown\\\",\\\"level\\\":3,\\\"children\\\":[]}]},{\\\"name\\\":\\\"Basic Syntax of Markdown\\\",\\\"anchor\\\":\\\"basic-syntax-of-markdown\\\",\\\"level\\\":2,\\\"children\\\":[{\\\"name\\\":\\\"Headings\\\",\\\"anchor\\\":\\\"headings\\\",\\\"level\\\":3,\\\"children\\\":[]}]}]}]\",\n        \"htmlContent\": \"<h1 class=&#x27;preserveHtml&#x27; id=\\\"the-wonders-of-markdown-a-comprehensive-guide\\\">The Wonders of Markdown: A Comprehensive Guide</h1><p class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;>Markdown is a lightweight markup language that has gained immense popularity for its simplicity and effectiveness in formatting text. Originally created by John Gruber in 2004, Markdown allows writers, developers, and content creators to write using an easy-to-read and easy-to-write plain text format. This article explores the various aspects of Markdown, its syntax, applications, and benefits.</p><h2 class=&#x27;preserveHtml&#x27; id=\\\"what-is-markdown\\\">What is Markdown?</h2><p class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;>Markdown is designed to be a simple way to style text on the web. It converts plain text into HTML, making it ideal for creating content for websites, documentation, and even emails. Its straightforward syntax enables users to focus on writing without getting bogged down by complex formatting tools.</p><h3 class=&#x27;preserveHtml&#x27; id=\\\"key-features-of-markdown\\\">Key Features of Markdown</h3><ul class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;><li class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;><p class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;><strong class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;>Simplicity</b>: The syntax is intuitive and minimalistic, making it accessible for beginners.</p></li><li class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;><p class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;><strong class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;>Portability</b>: Markdown files are plain text, allowing them to be opened and edited in any text editor.</p></li><li class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;><p class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;><strong class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;>Compatibility</b>: Most platforms, including GitHub, Reddit, and various blogging tools, support Markdown.</p></li></ul><h2 class=&#x27;preserveHtml&#x27; id=\\\"basic-syntax-of-markdown\\\">Basic Syntax of Markdown</h2><h3 class=&#x27;preserveHtml&#x27; id=\\\"headings\\\">Headings</h3><p class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;>Headings are created using the <code class=&#x27;preserveHtml&#x27; data-backticks=\\\"1\\\">#</code> symbol. The number of <code class=&#x27;preserveHtml&#x27; data-backticks=\\\"1\\\">#</code> symbols indicates the heading level:</p><div class=&#x27;preserveHtml&#x27; data-language=\\\"markdown\\\" class=\\\"toastui-editor-ww-code-block\\\"><pre class=&#x27;preserveHtml&#x27; class=&#x27;preserveHtml&#x27;><code class=&#x27;preserveHtml&#x27; data-language=\\\"markdown\\\"># This is an H1 Heading\\n## This is an H2 Heading\\n### This is an H3 Heading</code></pre></div>\",\n        \"thumb\": \"/static/uploads/1743092802209-541313562.jpg\",\n        \"scanNumber\": 0,\n        \"commentNumber\": 0\n    }\n}\n\n ```\n\n#### Response\n\n- id (number): The ID of the created blog post.\n    \n- title (string): The title of the created blog post.\n    \n- description (string): The description of the created blog post.\n    \n- createDate (number): The timestamp of the blog post creation.\n    \n- categoryId (number): The category ID of the blog post.\n    \n- toc (string): Table of contents for the blog post.\n    \n- htmlContent (string): The HTML content of the blog post.\n    \n- thumb (string): The thumbnail image for the blog post.\n    \n- scanNumber (number): The number of scans for the blog post.\n    \n- commentNumber (number): The number of comments for the blog post.\n    \n\n#### Example Response\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": {\n        \"id\": 0,\n        \"title\": \"\",\n        \"description\": \"\",\n        \"createDate\": 0,\n        \"categoryId\": 0,\n        \"toc\": \"\",\n        \"htmlContent\": \"\",\n        \"thumb\": \"\",\n        \"scanNumber\": 0,\n        \"commentNumber\": 0\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "edit blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"title\": \"Test tilte edit\",\r\n\t\"description\": \"abc\",\r\n\t\"createDate\": 1743092804815,\r\n\t\"categoryId\": 3,\r\n\t\"toc\": [],\r\n\t\"htmlContent\": \"<h1>The Wonders of Markdown: A Comprehensive Guide</h1><p>Markdown is a lightweight markup language that has gained immense popularity for its simplicity and effectiveness in formatting text. Originally created by John Gruber in 2004, Markdown allows writers, developers, and content creators to write using an easy-to-read and easy-to-write plain text format. This article explores the various aspects of Markdown, its syntax, applications, and benefits.</p><h2>What is Markdown?</h2><p>Markdown is designed to be a simple way to style text on the web. It converts plain text into HTML, making it ideal for creating content for websites, documentation, and even emails. Its straightforward syntax enables users to focus on writing without getting bogged down by complex formatting tools.</p><h3>Key Features of Markdown</h3><ul><li><p><strong>Simplicity</strong>: The syntax is intuitive and minimalistic, making it accessible for beginners.</p></li><li><p><strong>Portability</strong>: Markdown files are plain text, allowing them to be opened and edited in any text editor.</p></li><li><p><strong>Compatibility</strong>: Most platforms, including GitHub, Reddit, and various blogging tools, support Markdown.</p></li></ul><h2>Basic Syntax of Markdown</h2><h3>Headings</h3><p>Headings are created using the <code data-backticks=\\\"1\\\">#</code> symbol. The number of <code data-backticks=\\\"1\\\">#</code> symbols indicates the heading level:</p><div data-language=\\\"markdown\\\" class=\\\"toastui-editor-ww-code-block\\\"><pre><code data-language=\\\"markdown\\\"># This is an H1 Heading\\n## This is an H2 Heading\\n### This is an H3 Heading</code></pre></div>\",\r\n\t\"thumb\": \"/static/uploads/1743092802209-541313562.jpg\",\r\n\t\"markdownContent\": \"# The Wonders of Markdown: A Comprehensive Guide\\n\\nMarkdown is a lightweight markup language that has gained immense popularity for its simplicity and effectiveness in formatting text. Originally created by John Gruber in 2004, Markdown allows writers, developers, and content creators to write using an easy-to-read and easy-to-write plain text format. This article explores the various aspects of Markdown, its syntax, applications, and benefits.\\n\\n## What is Markdown?\\n\\nMarkdown is designed to be a simple way to style text on the web. It converts plain text into HTML, making it ideal for creating content for websites, documentation, and even emails. Its straightforward syntax enables users to focus on writing without getting bogged down by complex formatting tools.\\n\\n### Key Features of Markdown\\n\\n- **Simplicity**: The syntax is intuitive and minimalistic, making it accessible for beginners.\\n- **Portability**: Markdown files are plain text, allowing them to be opened and edited in any text editor.\\n- **Compatibility**: Most platforms, including GitHub, Reddit, and various blogging tools, support Markdown.\\n\\n## Basic Syntax of Markdown\\n\\n### Headings\\n\\nHeadings are created using the `#` symbol. The number of `#` symbols indicates the heading level:\\n\\n```markdown\\n# This is an H1 Heading\\n## This is an H2 Heading\\n### This is an H3 Heading\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/blog/2",
+						"description": "This endpoint allows you to update a specific blog post by sending an HTTP PUT request to {{blogserver}}/api/blog/2. The request should include a JSON payload in the raw request body type, containing the updated title, description, create date, category ID, table of contents, HTML content, thumbnail, and markdown content.\n\n### Request Body\n\n- `title`: (string) The updated title of the blog post.\n    \n- `description`: (string) The updated description of the blog post.\n    \n- `createDate`: (number) The updated create date of the blog post.\n    \n- `categoryId`: (number) The updated category ID of the blog post.\n    \n- `toc`: (array) The updated table of contents of the blog post.\n    \n- `htmlContent`: (string) The updated HTML content of the blog post.\n    \n- `thumb`: (string) The updated thumbnail of the blog post.\n    \n- `markdownContent`: (string) The updated markdown content of the blog post.\n    \n\n### Response\n\nUpon successful execution, the server will respond with a status code of 200 and a JSON object containing the following fields:\n\n- `code`: (number) The status code of the response.\n    \n- `msg`: (string) A message related to the response.\n    \n- `data`: (object) An object containing the updated details of the blog post, including the ID, title, description, table of contents, HTML content, thumbnail, scan number, comment number, create date, and category ID.\n    \n\nExample Response:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": {\n        \"id\": 2,\n        \"title\": \"Test tilte edit\",\n        \"description\": \"abc\",\n        \"toc\": \"[{\\\"name\\\":\\\"The Wonders of Markdown: A Comprehensive Guide\\\",\\\"anchor\\\":\\\"the-wonders-of-markdown-a-comprehensive-guide\\\",\\\"level\\\":1,\\\"children\\\":[{\\\"name\\\":\\\"What is Markdown?\\\",\\\"anchor\\\":\\\"what-is-markdown\\\",\\\"level\\\":2,\\\"children\\\":[{\\\"name\\\":\\\"Key Features of Markdown\\\",\\\"anchor\\\":\\\"key-features-of-markdown\\\",\\\"level\\\":3,\\\"children\\\":[]}]},{\\\"name\\\":\\\"Basic Syntax of Markdown\\\",\\\"anchor\\\":\\\"basic-syntax-of-markdown\\\",\\\"level\\\":2,\\\"children\\\":[{\\\"name\\\":\\\"Headings\\\",\\\"anchor\\\":\\\"headings\\\",\\\"level\\\":3,\\\"children\\\":[]}]}]}]\",\n        \"htmlContent\": \"<h1 id=\\\"the-wonders-of-markdown-a-comprehensive-guide\\\">The Wonders of Markdown: A Comprehensive Guide</h1><p>Markdown is a lightweight markup language that has gained immense popularity for its simplicity and effectiveness in formatting text. Originally created by John Gruber in 2004, Markdown allows writers, developers, and content creators to write using an easy-to-read and easy-to-write plain text format. This article explores the various aspects of Markdown, its syntax, applications, and benefits.</p><h2 id=\\\"what-is-markdown\\\">What is Markdown?</h2><p>Markdown is designed to be a simple way to style text on the web. It converts plain text into HTML, making it ideal for creating content for websites, documentation, and even emails. Its straightforward syntax enables users to focus on writing without getting bogged down by complex formatting tools.</p><h3 id=\\\"key-features-of-markdown\\\">Key Features of Markdown</h3><ul><li><p><b>Simplicity</b>: The syntax is intuitive and minimalistic, making it accessible for beginners.</p></li><li><p><b>Portability</b>: Markdown files are plain text, allowing them to be opened and edited in any text editor.</p></li><li><p><b>Compatibility</b>: Most platforms, including GitHub, Reddit, and various blogging tools, support Markdown.</p></li></ul><h2 id=\\\"basic-syntax-of-markdown\\\">Basic Syntax of Markdown</h2><h3 id=\\\"headings\\\">Headings</h3><p>Headings are created using the <code data-backticks=\\\"1\\\">#</code> symbol. The number of <code data-backticks=\\\"1\\\">#</code> symbols indicates the heading level:</p><div data-language=\\\"markdown\\\" class=\\\"toastui-editor-ww-code-block\\\"><pre><code data-language=\\\"markdown\\\"># This is an H1 Heading\\n## This is an H2 Heading\\n### This is an H3 Heading</code></pre></div>\",\n        \"thumb\": \"/static/uploads/1743092802209-541313562.jpg\",\n        \"scanNumber\": 6,\n        \"commentNumber\": 4,\n        \"createDate\": 1743092804815,\n        \"categoryId\": 3\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "edit blog 2",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"title\": \"CSS Beginer edit2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/blog/2",
+						"description": "### Update Blog\n\nThis endpoint is used to update a specific blog with the provided ID.\n\n#### Request Body\n\n- Any field of the blog\n    \n- E.g. title (string, required): The updated title of the blog.\n    \n\n#### Response\n\n- Status: 200 OK\n    \n- Content-Type: application/json\n    \n- code (integer): The status code of the response.\n    \n- msg (string): The message associated with the response.\n    \n- data (object): The updated blog details including ID, title, description, table of contents (toc), HTML content, thumbnail, scan number, comment number, creation date, and category ID.\n    \n    - id (integer): The ID of the updated blog.\n        \n    - title (string): The updated title of the blog.\n        \n    - description (string): The updated description of the blog.\n        \n    - toc (string): The updated table of contents of the blog.\n        \n    - htmlContent (string): The updated HTML content of the blog.\n        \n    - thumb (string): The updated thumbnail of the blog.\n        \n    - scanNumber (integer): The updated scan number of the blog.\n        \n    - commentNumber (integer): The updated comment number of the blog.\n        \n    - createDate (string): The updated creation date of the blog.\n        \n    - categoryId (integer): The updated category ID of the blog."
+					},
+					"response": []
+				},
+				{
+					"name": "delete blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": "{{blogserver}}/api/blog/3",
+						"description": "### Delete Blog\n\nThis endpoint is used to delete a specific blog with the given ID.\n\n#### Request\n\n- Method: DELETE\n    \n- URL: `{{blogserver}}/api/blog/3`\n    \n\n#### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n- { \"code\": 0, \"msg\": \"\", \"data\": true}  \n    The response contains a `code` indicating the status of the operation, a `msg` for any additional information, and `data` which is a boolean value indicating the success of the deletion operation."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "blogType",
+			"item": [
+				{
+					"name": "get all blog type",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": "{{blogserver}}/api/blogtype",
+						"description": "### Retrieve Blog Types\n\nThis endpoint makes an HTTP GET request to retrieve the list of blog types available.\n\n#### Request Body\n\nThis request does not require a request body.\n\n#### Response\n\nThe response will include an array of blog types with their respective details.\n\n``` json\n{\n  \"code\": 0,\n  \"msg\": \"string\",\n  \"data\": [\n    {\n      \"name\": \"string\",\n      \"articleCount\": 0,\n      \"order\": 0,\n      \"id\": \"string\"\n    }\n  ]\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "get single blog type",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": "{{blogserver}}/api/blogtype/1",
+						"description": "This endpoint retrieves the details of a specific blog type identified by its unique ID.\n\n### Request\n\n#### Request Parameters\n\n- id: The unique identifier of the blog type.\n    \n\n### Response\n\nThe response of this request is a JSON object representing the details of the blog type. The JSON schema for the response can be documented as follows:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"Front-end\",\n        \"articleCount\": 8,\n        \"order\": 1\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "add blog type",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"HTML2\",\r\n    \"order\": \"2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{blogserver}}/api/blogtype",
+							"host": [
+								"{{blogserver}}"
+							],
+							"path": [
+								"api",
+								"blogtype"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "asfasf12",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This HTTP POST request is used to create a new blog type on the server. The request should be sent to {{blogserver}}/api/blogtype with a JSON payload in the raw request body. The payload should include the name of the blog type and its order.\n\n### Request Body\n\n- name (string): The name of the blog type.\n    \n- order (string): The order of the blog type.\n    \n\n### Response\n\nUpon successful execution, the server will respond with a status code of 200 and a JSON object in the response body. The response will include a code, a message, and data related to the newly created blog type. The data will consist of the ID, name, order, and the count of articles associated with the blog type."
+					},
+					"response": []
+				},
+				{
+					"name": "edit blog type",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"HTML2 edit\",\r\n    \"order\": \"23\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{blogserver}}/api/blogtype/10",
+							"host": [
+								"{{blogserver}}"
+							],
+							"path": [
+								"api",
+								"blogtype",
+								"10"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						},
+						"description": "### Update Blog Type\n\nThis endpoint allows the client to update a specific blog type.\n\n#### Request\n\n- Method: PUT\n    \n- URL: `{{blogserver}}/api/blogtype/10`\n    \n- Body:\n    \n    - `name`: (text) The updated name of the blog type.\n        \n    - `order`: (text) The updated order of the blog type.\n        \n\n#### Response\n\nThe response is in JSON format and follows the schema below:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": {\n        \"id\": 10,\n        \"name\": \"HTML2 edit\",\n        \"articleCount\": 0,\n        \"order\": 23\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "delete blog type",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{blogserver}}/api/blogtype/11",
+							"host": [
+								"{{blogserver}}"
+							],
+							"path": [
+								"api",
+								"blogtype",
+								"11"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "10",
+									"disabled": true
+								}
+							]
+						},
+						"description": "### DELETE /api/blogtype/10\n\nThis endpoint is used to delete a specific blog entry by its ID.\n\n#### Request Body\n\nThis request does not require a request body.\n\n#### Response\n\nThe response for this request is a JSON object with the following schema:\n\n``` json\n{\n    \"code\": 1,\n    \"msg\": \"\",\n    \"data\": null\n}\n\n ```\n\nThe response contains the following fields:\n\n- `code` (integer): Indicates the status of the operation.\n    \n- `msg` (string): Provides any additional information or error messages.\n    \n- `data` (integer): Represents the specific data related to the operation."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "captcha",
+			"item": [
+				{
+					"name": "get captcha",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": "{{blogserver}}/res/captcha",
+						"description": "### Retrieve CAPTCHA\n\nThis endpoint retrieves a CAPTCHA image for user verification.\n\n#### Request\n\nNo request body is required for this request.\n\n#### Response\n\nSVG image\n\n``` svg\n00000000: 3C 73 76 67 20 78 6D 6C 6E 73 3D 22 68 74 74 70    00000040: 76 69 65 77 42 6F 78 3D 22 30 2C 30 2C 31 35 30    viewBox=\"0,0,150\n00000050: 2C 35 30 22 3E 3C 72 65 63 74 20 77 69 64 74 68    ,50\">00000060: 3D 22 31 30 30 25 22 20 68 65 69 67 68 74 3D 22    =\"100%\" height=\"\n00000070: 31 30 30 25 22 20 66 69 6C 6C 3D 22 23 66 30 66    100%\" fill=\"#f0f\n00000080: 30 66 30 22 2F 3E 3C 70 61 74 68 20 66 69 6C 6C    0f0\"/>00000090: 3D 22 23 64 62 62 31 33 33 22 20 64 3D 22 4D 31    =\"#dbb133\" d=\"M1\n000000a0: 32 32 2E 33 33 20 32 31 2E 34 39 4C 31 32 32 2E    22.33 21.49L122.\n000000b0: 32 37 20 32 31 2E 34 33 4C 31 32 32 2E 32 35 20    27 21.43L122.25 \n000000c0: 32 31 2E 34 31 51 31 32 30 2E 36 38 20 32 30 2E    21.41Q120.68 20.\n000000d0: 31 34 20 31 31 39 2E 30 34 20 31 39 2E 37 36 4C    14 119.04 19.76L\n000000e0: 31 31 39 2E 30 38 20 31 39 2E 38 30 4C 31 31 38    119.08 19.80L118\n000000f0: 2E 39 38 20 31 39 2E 37 30 51 31 31 38 2E 30 32    .98 19.70Q118.02\n00000100: 20 31 39 2E 35 37 20 31 31 35 2E 32 34 20 31 39     19.57 115.24 19\n00000110: 2E 35 33 4C 31 31 35 2E 31 36 20 31 39 2E 34 35    .53L115.16 19.45\n00000120: 4C 31 31 35 2E 32 36 20 31 39 2E 35 36 51 31 31    L115.26 19.56Q11\n00000130: 30 2E 30 37 20 31 39 2E 35 31 20 31 30 38 2E 30    0.07 19.51 108.0\n00000140: 32 20 32 31 2E 35 33 4C 31 30 38 2E 30 34 20 32    2 21.53L108.04 2\n00000150: 31 2E 35 35 4C 31 30 37 2E 39 36 20 32 31 2E 34    1.55L107.96 21.4\n00000160: 37 51 31 30 36 2E 32 39 20 32 33 2E 30 30 20 31    7Q106.29 23.00 1\n00000170: 30 36 2E 34 30 20 32 36 2E 36 39 4C 31 30 36 2E    06.40 26.69L106.\n00000180: 35 32 20 32 36 2E 38 31 4C 31 30 36 2E 34 37 20    52 26.81L106.47 \n00000190: 32 36 2E 37 36 51 31 30 36 2E 36 34 20 33 30 2E    26.76Q106.64 30.\n000001a0: 35 38 20 31 30 36 2E 37 39 20 33 31 2E 35 33 4C    58 106.79 31.53L\n000001b0: 31 30 36 2E 36 30 20 33 31 2E 33 34 4C 31 30 36    106.60 31.34L106\n000001c0: 2E 37 39 20 33 31 2E 35 33 51 31 30 37 2E 37 30    .79 31.53Q107.70\n000001d0: 20 33 37 2E 34 37 20 31 31 35 2E 34 33 20 33 37     37.47 115.43 37\n000001e0: 2E 34 37 4C 31 31 35 2E 33 39 20 33 37 2E 34 33    .47L115.39 37.43\n000001f0: 4C 31 31 35 2E 34 34 20 33 37 2E 34 38 51 31 32    L115.44 37.48Q12\n00000200: 30 2E 30 38 20 33 37 2E 34 34 20 31 32 32 2E 31    0.08 37.44 122.1\n00000210: 38 20 33 35 2E 30 34 4C 31 32 32 2E 33 35 20 33    8 35.04L122.35 3\n00000220: 35 2E 32 31 4C 31 32 32 2E 32 36 20 33 35 2E 31    5.21L122.26 35.1\n00000230: 33 51 31 32 34 2E 30 38 20 33 32 2E 38 37 20 31    3Q124.08 32.87 1\n00000240: 32 34 2E 33 31 20 32 38 2E 31 31 4C 31 32 34 2E    24.31 28.11L124.\n00000250: 34 38 20 32 38 2E 32 38 4C 31 32 34 2E 34 37 20    48 28.28L124.47 \n00000260: 32 38 2E 32 38 51 31 32 34 2E 36 35 20 32 33 2E    28.28Q124.65 23.\n00000270: 33 39 20 31 32 32 2E 33 33 20 32 31 2E 34 38 5A    39 122.33 21.48Z\n00000280: 4D 31 31 35 2E 34 38 20 34 30 2E 35 32 4C 31 31    M115.48 40.52L11\n00000290: 35 2E 34 31 20 34 30 2E 34 35 4C 31 31 35 2E 33    5.41 40.45L115.3\n000002a0: 36 20 34 30 2E 34 30 51 31 30 38 2E 38 32 20 34    6 40.40Q108.82 4\n000002b0: 30 2E 35 33 20 31 30 35 2E 38 35 20 33 38 2E 31    0.53 105.85 38.1\n000002c0: 37 4C 31 30 36 2E 30 33 20 33 38 2E 33 35 4C 31    7L106.03 38.35L1\n000002d0: 30 36 2E 30 32 20 33 38 2E 33 33 51 31 30 33 2E    06.02 38.33Q103.\n000002e0: 38 36 20 33 36 2E 31 30 20 31 30 33 2E 37 35 20    86 36.10 103.75 \n000002f0: 33 31 2E 30 34 4C 31 30 33 2E 37 37 20 33 31 2E    31.04L103.77 31.\n00000300: 30 36 4C 31 30 33 2E 37 35 20 33 31 2E 30 34 51    06L103.75 31.04Q\n00000310: 31 30 33 2E 36 35 20 33 30 2E 34 35 20 31 30 33    103.65 30.45 103\n00000320: 2E 35 30 20 32 37 2E 31 37 4C 31 30 33 2E 35 31    .50 27.17L103.51\n00000330: 20 32 37 2E 31 38 4C 31 30 33 2E 36 34 20 32 37     27.18L103.64 27\n00000340: 2E 33 31 51 31 30 33 2E 35 31 20 32 34 2E 37 31    .31Q103.51 24.71\n00000350: 20 31 30 33 2E 35 35 20 32 33 2E 36 34 4C 31 30     103.55 23.64L10\n00000360: 33 2E 34 38 20 32 33 2E 35 37 4C 31 30 33 2E 33    3.48 23.57L103.3\n00000370: 37 20 32 33 2E 34 36 51 31 30 33 2E 36 39 20 32    7 23.46Q103.69 2\n00000380: 30 2E 37 38 20 31 30 35 2E 31 30 20 31 39 2E 30    0.78 105.10 19.0\n00000390: 36 4C 31 30 34 2E 39 34 20 31 38 2E 39 31 4C 31    6L104.94 18.91L1\n000003a0: 30 35 2E 30 38 20 31 39 2E 30 35 51 31 30 37 2E    05.08 19.05Q107.\n000003b0: 36 37 20 31 36 2E 38 30 20 31 31 32 2E 35 34 20    67 16.80 112.54 \n000003c0: 31 36 2E 36 35 4C 31 31 32 2E 34 38 20 31 36 2E    16.65L112.48 16.\n000003d0: 35 39 4C 31 31 32 2E 34 34 20 31 36 2E 35 35 51    59L112.44 16.55Q\n000003e0: 31 31 34 2E 32 39 20 31 36 2E 35 37 20 31 31 35    114.29 16.57 115\n000003f0: 2E 31 36 20 31 36 2E 36 30 4C 31 31 35 2E 30 39    .16 16.60L115.09\n00000400: 20 31 36 2E 35 33 4C 31 31 35 2E 30 35 20 31 36     16.53L115.05 16\n00000410: 2E 34 39 51 31 32 35 2E 31 38 20 31 36 2E 37 36    .49Q125.18 16.76\n00000420: 20 31 32 36 2E 39 33 20 32 31 2E 31 30 4C 31 32     126.93 21.10L12\n00000430: 36 2E 38 31 20 32 30 2E 39 38 4C 31 32 36 2E 37    6.81 20.98L126.7\n00000440: 35 20 32 30 2E 39 32 51 31 32 37 2E 35 36 20 32    5 20.92Q127.56 2\n00000450: 32 2E 39 35 20 31 32 37 2E 34 31 20 32 35 2E 36    2.95 127.41 25.6\n00000460: 39 4C 31 32 37 2E 35 38 20 32 35 2E 38 36 4C 31    9L127.58 25.86L1\n00000470: 32 37 2E 34 38 20 32 35 2E 37 37 51 31 32 37 2E    27.48 25.77Q127.\n00000480: 35 30 20 32 37 2E 34 39 20 31 32 37 2E 33 31 20    50 27.49 127.31 \n00000490: 33 30 2E 37 37 4C 31 32 37 2E 32 30 20 33 30 2E    30.77L127.20 30.\n000004a0: 36 36 4C 31 32 37 2E 33 34 20 33 30 2E 38 30 51    66L127.34 30.80Q\n000004b0: 31 32 36 2E 39 36 20 33 33 2E 34 33 20 31 32 36    126.96 33.43 126\n000004c0: 2E 30 35 20 33 35 2E 34 39 4C 31 32 36 2E 32 30    .05 35.49L126.20\n000004d0: 20 33 35 2E 36 33 4C 31 32 36 2E 30 35 20 33 35     35.63L126.05 35\n000004e0: 2E 34 39 51 31 32 34 2E 31 39 20 34 30 2E 34 30    .49Q124.19 40.40\n000004f0: 20 31 31 35 2E 35 35 20 34 30 2E 35 39 5A 4D 31     115.55 40.59ZM1\n00000500: 32 37 2E 37 39 20 34 30 2E 34 37 4C 31 32 37 2E    27.79 40.47L127.\n00000510: 38 37 20 34 30 2E 35 34 4C 31 32 37 2E 38 31 20    87 40.54L127.81 \n00000520: 34 30 2E 34 38 51 31 32 39 2E 31 35 20 33 38 2E    40.48Q129.15 38.\n00000530: 36 36 20 31 32 39 2E 32 36 20 33 35 2E 35 37 4C    66 129.26 35.57L\n00000540: 31 32 39 2E 33 34 20 33 35 2E 36 36 4C 31 32 39    129.34 35.66L129\n00000550: 2E 32 35 20 33 35 2E 35 36 51 31 32 39 2E 33 35    .25 35.56Q129.35\n00000560: 20 33 34 2E 35 36 20 31 32 39 2E 33 31 20 33 32     34.56 129.31 32\n00000570: 2E 39 36 4C 31 32 39 2E 32 39 20 33 32 2E 39 34    .96L129.29 32.94\n00000580: 4C 31 32 39 2E 33 36 20 33 33 2E 30 31 51 31 32    L129.36 33.01Q12\n00000590: 39 2E 32 32 20 33 32 2E 31 35 20 31 32 39 2E 31    9.22 32.15 129.1\n000005a0: 38 20 33 30 2E 33 32 4C 31 32 39 2E 33 35 20 33    8 30.32L129.35 3\n000005b0: 30 2E 34 39 4C 31 32 39 2E 33 32 20 33 30 2E 34    0.49L129.32 30.4\n000005c0: 36 51 31 32 39 2E 32 35 20 32 33 2E 33 31 20 31    6Q129.25 23.31 1\n000005d0: 32 37 2E 33 31 20 32 30 2E 38 33 4C 31 32 37 2E    27.31 20.83L127.\n000005e0: 31 39 20 32 30 2E 37 32 4C 31 32 37 2E 32 37 20    19 20.72L127.27 \n000005f0: 32 30 2E 37 39 51 31 32 36 2E 38 36 20 31 39 2E    20.79Q126.86 19.\n00000600: 37 38 20 31 32 35 2E 37 36 20 31 38 2E 36 37 4C    78 125.76 18.67L\n00000610: 31 32 35 2E 37 35 20 31 38 2E 36 36 4C 31 32 35    125.75 18.66L125\n00000620: 2E 37 35 20 31 38 2E 36 36 51 31 32 32 2E 34 36    .75 18.66Q122.46\n00000630: 20 31 36 2E 31 37 20 31 31 35 2E 30 30 20 31 36     16.17 115.00 16\n00000640: 2E 30 32 4C 31 31 35 2E 30 36 20 31 36 2E 30 38    .02L115.06 16.08\n00000650: 4C 31 31 35 2E 30 37 20 31 36 2E 30 39 51 31 30    L115.07 16.09Q10\n00000660: 37 2E 36 36 20 31 35 2E 39 36 20 31 30 34 2E 36    7.66 15.96 104.6\n00000670: 32 20 31 38 2E 35 35 4C 31 30 34 2E 35 34 20 31    2 18.55L104.54 1\n00000680: 38 2E 34 37 4C 31 30 34 2E 37 30 20 31 38 2E 36    8.47L104.70 18.6\n00000690: 33 51 31 30 33 2E 32 30 20 32 30 2E 34 34 20 31    3Q103.20 20.44 1\n000006a0: 30 33 2E 32 30 20 32 33 2E 33 37 4C 31 30 33 2E    03.20 23.37L103.\n000006b0: 30 34 20 32 33 2E 32 31 4C 31 30 33 2E 30 39 20    04 23.21L103.09 \n000006c0: 32 33 2E 32 36 51 31 30 33 2E 30 35 20 32 34 2E    23.26Q103.05 24.\n000006d0: 35 31 20 31 30 33 2E 32 30 20 32 35 2E 38 35 4C    51 103.20 25.85L\n000006e0: 31 30 33 2E 32 30 20 32 35 2E 38 35 4C 31 30 33    103.20 25.85L103\n000006f0: 2E 33 36 20 32 36 2E 30 30 51 31 30 33 2E 33 36    .36 26.00Q103.36\n00000700: 20 32 37 2E 30 37 20 31 30 33 2E 34 30 20 32 38     27.07 103.40 28\n00000710: 2E 35 32 4C 31 30 33 2E 32 37 20 32 38 2E 33 39    .52L103.27 28.39\n00000720: 4C 31 30 33 2E 33 31 20 32 38 2E 34 33 51 31 30    L103.31 28.43Q10\n00000730: 33 2E 35 30 20 33 32 2E 34 33 20 31 30 33 2E 36    3.50 32.43 103.6\n00000740: 35 20 33 33 2E 36 31 4C 31 30 33 2E 37 31 20 33    5 33.61L103.71 3\n00000750: 33 2E 36 36 4C 31 30 33 2E 35 36 20 33 33 2E 35    3.66L103.56 33.5\n00000760: 31 51 31 30 33 2E 39 32 20 33 36 2E 34 33 20 31    1Q103.92 36.43 1\n00000770: 30 35 2E 32 35 20 33 38 2E 32 32 4C 31 30 35 2E    05.25 38.22L105.\n00000780: 33 39 20 33 38 2E 33 36 4C 31 30 35 2E 32 33 20    39 38.36L105.23 \n00000790: 33 38 2E 31 39 51 31 30 35 2E 38 30 20 33 39 2E    38.19Q105.80 39.\n000007a0: 36 30 20 31 30 36 2E 38 36 20 34 30 2E 33 36 4C    60 106.86 40.36L\n000007b0: 31 30 36 2E 39 34 20 34 30 2E 34 34 4C 31 30 36    106.94 40.44L106\n000007c0: 2E 37 39 20 34 30 2E 32 39 51 31 31 30 2E 30 33    .79 40.29Q110.03\n000007d0: 20 34 32 2E 36 31 20 31 31 37 2E 38 30 20 34 32     42.61 117.80 42\n000007e0: 2E 38 30 4C 31 31 37 2E 37 39 20 34 32 2E 38 30    .80L117.79 42.80\n000007f0: 4C 31 31 37 2E 37 37 20 34 32 2E 37 37 51 31 32    L117.77 42.77Q12\n00000800: 35 2E 31 31 20 34 33 2E 30 30 20 31 32 37 2E 37    5.11 43.00 127.7\n00000810: 38 20 34 30 2E 34 35 5A 4D 31 32 34 2E 31 32 20    8 40.45ZM124.12 \n00000820: 32 38 2E 31 39 4C 31 32 34 2E 32 31 20 32 38 2E    28.19L124.21 28.\n00000830: 32 38 4C 31 32 34 2E 32 31 20 32 38 2E 32 38 51    28L124.21 28.28Q\n00000840: 31 32 33 2E 39 37 20 33 32 2E 38 30 20 31 32 32    123.97 32.80 122\n00000850: 2E 30 37 20 33 34 2E 38 39 4C 31 32 32 2E 30 36    .07 34.89L122.06\n00000860: 20 33 34 2E 38 39 4C 31 32 32 2E 30 37 20 33 34     34.89L122.07 34\n00000870: 2E 38 39 51 31 31 39 2E 39 31 20 33 37 2E 30 38    .89Q119.91 37.08\n00000880: 20 31 31 35 2E 34 36 20 33 37 2E 31 32 4C 31 31     115.46 37.12L11\n00000890: 35 2E 35 30 20 33 37 2E 31 36 4C 31 31 35 2E 35    5.50 37.16L115.5\n000008a0: 38 20 33 37 2E 32 34 51 31 31 31 2E 31 37 20 33    8 37.24Q111.17 3\n000008b0: 37 2E 32 30 20 31 30 39 2E 30 34 20 33 35 2E 33    7.20 109.04 35.3\n000008c0: 30 4C 31 30 39 2E 30 36 20 33 35 2E 33 33 4C 31    0L109.06 35.33L1\n000008d0: 30 38 2E 39 32 20 33 35 2E 31 38 51 31 30 38 2E    08.92 35.18Q108.\n000008e0: 32 38 20 33 33 2E 36 33 20 31 30 38 2E 33 35 20    28 33.63 108.35 \n000008f0: 33 30 2E 37 33 4C 31 30 38 2E 33 36 20 33 30 2E    30.73L108.36 30.\n00000900: 37 34 4C 31 30 38 2E 33 37 20 33 30 2E 37 35 51    74L108.37 30.75Q\n00000910: 31 30 38 2E 34 36 20 32 36 2E 31 32 20 31 31 30    108.46 26.12 110\n00000920: 2E 34 38 20 32 33 2E 39 35 4C 31 31 30 2E 34 33    .48 23.95L110.43\n00000930: 20 32 33 2E 39 30 4C 31 31 30 2E 34 30 20 32 33     23.90L110.40 23\n00000940: 2E 38 37 51 31 31 32 2E 35 34 20 32 31 2E 38 33    .87Q112.54 21.83\n00000950: 20 31 31 37 2E 31 35 20 32 31 2E 38 33 4C 31 31     117.15 21.83L11\n00000960: 37 2E 31 32 20 32 31 2E 37 39 4C 31 31 37 2E 31    7.12 21.79L117.1\n00000970: 35 20 32 31 2E 38 33 51 31 32 31 2E 33 30 20 32    5 21.83Q121.30 2\n00000980: 31 2E 37 39 20 31 32 33 2E 34 30 20 32 33 2E 36    1.79 123.40 23.6\n00000990: 36 4C 31 32 33 2E 33 34 20 32 33 2E 36 31 4C 31    6L123.34 23.61L1\n000009a0: 32 33 2E 34 31 20 32 33 2E 36 38 51 31 32 34 2E    23.41 23.68Q124.\n000009b0: 32 37 20 32 35 2E 34 35 20 31 32 34 2E 31 36 20    27 25.45 124.16 \n000009c0: 32 38 2E 32 33 5A 22 2F 3E 3C 70 61 74 68 20 64    28.23Z\"/>000009d0: 3D 22 4D 33 20 34 20 43 39 34 20 31 39 2C 39 33    =\"M3 4 C94 19,93\n000009e0: 20 32 32 2C 31 34 38 20 34 37 22 20 73 74 72 6F     22,148 47\" stro\n000009f0: 6B 65 3D 22 23 65 35 37 61 61 66 22 20 66 69 6C    ke=\"#e57aaf\" fil\n00000a00: 6C 3D 22 6E 6F 6E 65 22 2F 3E 3C 70 61 74 68 20    l=\"none\"/>00000a10: 66 69 6C 6C 3D 22 23 36 33 38 31 64 64 22 20 64    fill=\"#6381dd\" d\n00000a20: 3D 22 4D 35 36 2E 30 32 20 32 39 2E 37 32 4C 35    =\"M56.02 29.72L5\n00000a30: 36 2E 31 31 20 32 39 2E 38 31 4C 35 36 2E 31 30    6.11 29.81L56.10\n00000a40: 20 32 39 2E 38 30 51 35 31 2E 38 35 20 32 39 2E     29.80Q51.85 29.\n00000a50: 35 35 20 35 31 2E 32 38 20 33 32 2E 35 39 4C 35    55 51.28 32.59L5\n00000a60: 31 2E 33 34 20 33 32 2E 36 35 4C 35 31 2E 33 30    1.34 32.65L51.30\n00000a70: 20 33 32 2E 36 31 51 35 31 2E 30 32 20 33 33 2E     32.61Q51.02 33.\n00000a80: 35 39 20 35 31 2E 32 31 20 33 34 2E 34 37 4C 35    59 51.21 34.47L5\n00000a90: 31 2E 33 36 20 33 34 2E 36 31 4C 35 31 2E 33 36    1.36 34.61L51.36\n00000aa0: 20 33 34 2E 36 31 51 35 31 2E 33 34 20 33 35 2E     34.61Q51.34 35.\n00000ab0: 33 36 20 35 31 2E 38 30 20 33 36 2E 37 37 4C 35    36 51.80 36.77L5\n00000ac0: 31 2E 36 33 20 33 36 2E 36 30 4C 35 31 2E 37 31    1.63 36.60L51.71\n00000ad0: 20 33 36 2E 36 38 51 35 32 2E 37 38 20 33 39 2E     36.68Q52.78 39.\n00000ae0: 38 34 20 35 36 2E 31 30 20 33 39 2E 36 39 4C 35    84 56.10 39.69L5\n00000af0: 36 2E 31 31 20 33 39 2E 37 31 4C 35 36 2E 32 31    6.11 39.71L56.21\n00000b00: 20 33 39 2E 38 31 51 35 38 2E 31 31 20 33 39 2E     39.81Q58.11 39.\n00000b10: 37 37 20 35 39 2E 34 34 20 33 38 2E 32 31 4C 35    77 59.44 38.21L5\n00000b20: 39 2E 35 36 20 33 38 2E 33 32 4C 35 39 2E 34 31    9.56 38.32L59.41\n00000b30: 20 33 38 2E 31 38 51 36 30 2E 36 38 20 33 36 2E     38.18Q60.68 36.\n00000b40: 37 34 20 36 30 2E 36 38 20 33 34 2E 36 38 4C 36    74 60.68 34.68L6\n00000b50: 30 2E 37 34 20 33 34 2E 37 34 4C 36 30 2E 38 30    0.74 34.74L60.80\n00000b60: 20 33 34 2E 38 30 51 36 30 2E 39 33 20 33 34 2E     34.80Q60.93 34.\n00000b70: 32 31 20 36 30 2E 37 38 20 33 33 2E 31 34 4C 36    21 60.78 33.14L6\n00000b80: 30 2E 37 38 20 33 33 2E 31 34 4C 36 30 2E 36 35    0.78 33.14L60.65\n00000b90: 20 33 33 2E 30 32 51 36 30 2E 36 36 20 33 32 2E     33.02Q60.66 32.\n00000ba0: 31 38 20 36 30 2E 32 34 20 33 31 2E 35 30 4C 36    18 60.24 31.50L6\n00000bb0: 30 2E 32 30 20 33 31 2E 34 37 4C 36 30 2E 31 32    0.20 31.47L60.12\n00000bc0: 20 33 31 2E 33 38 51 35 38 2E 36 37 20 32 39 2E     31.38Q58.67 29.\n00000bd0: 39 30 20 35 36 2E 30 38 20 32 39 2E 37 38 5A 4D    90 56.08 29.78ZM\n00000be0: 36 30 2E 38 38 20 34 38 2E 32 31 4C 36 30 2E 39    60.88 48.21L60.9\n00000bf0: 39 20 34 38 2E 33 32 4C 36 30 2E 39 34 20 34 38    9 48.32L60.94 48\n00000c00: 2E 32 37 51 35 39 2E 30 36 20 34 38 2E 37 38 20    .27Q59.06 48.78 \n00000c10: 35 30 2E 39 38 20 34 39 2E 31 36 4C 35 30 2E 39    50.98 49.16L50.9\n00000c20: 31 20 34 39 2E 30 39 4C 35 30 2E 38 39 20 34 39    1 49.09L50.89 49\n00000c30: 2E 30 37 51 34 39 2E 33 38 20 34 39 2E 33 31 20    .07Q49.38 49.31 \n00000c40: 34 37 2E 37 34 20 34 38 2E 34 37 4C 34 37 2E 36    47.74 48.47L47.6\n00000c50: 39 20 34 38 2E 34 31 4C 34 37 2E 37 31 20 34 38    9 48.41L47.71 48\n00000c60: 2E 34 34 51 34 38 2E 35 37 20 34 37 2E 35 31 20    .44Q48.57 47.51 \n00000c70: 35 30 2E 34 30 20 34 35 2E 37 32 4C 35 30 2E 33    50.40 45.72L50.3\n00000c80: 35 20 34 35 2E 36 37 4C 35 30 2E 33 36 20 34 35    5 45.67L50.36 45\n00000c90: 2E 36 38 51 35 32 2E 36 34 20 34 36 2E 36 30 20    .68Q52.64 46.60 \n00000ca0: 35 34 2E 37 34 20 34 36 2E 34 31 4C 35 34 2E 38    54.74 46.41L54.8\n00000cb0: 30 20 34 36 2E 34 37 4C 35 34 2E 38 30 20 34 36    0 46.47L54.80 46\n00000cc0: 2E 34 37 51 35 37 2E 37 31 20 34 36 2E 32 32 20    .47Q57.71 46.22 \n00000cd0: 35 38 2E 35 35 20 34 35 2E 39 35 4C 35 38 2E 35    58.55 45.95L58.5\n00000ce0: 37 20 34 35 2E 39 37 4C 35 38 2E 35 36 20 34 35    7 45.97L58.56 45\n00000cf0: 2E 39 37 51 36 30 2E 37 36 20 34 35 2E 32 34 20    .97Q60.76 45.24 \n00000d00: 36 30 2E 37 36 20 34 33 2E 34 35 4C 36 30 2E 37    60.76 43.45L60.7\n00000d10: 30 20 34 33 2E 33 39 4C 36 30 2E 37 39 20 34 33    0 43.39L60.79 43\n00000d20: 2E 34 38 51 36 30 2E 38 31 20 34 33 2E 32 36 20    .48Q60.81 43.26 \n00000d30: 36 30 2E 37 33 20 34 33 2E 30 34 4C 36 30 2E 37    60.73 43.04L60.7\n00000d40: 36 20 34 33 2E 30 37 4C 36 30 2E 36 31 20 34 31    6 43.07L60.61 41\n00000d50: 2E 34 33 4C 36 30 2E 36 34 20 34 31 2E 34 36 51    .43L60.64 41.46Q\n00000d60: 36 30 2E 36 37 20 34 30 2E 37 33 20 36 30 2E 36    60.67 40.73 60.6\n00000d70: 37 20 33 39 2E 39 33 4C 36 30 2E 35 31 20 33 39    7 39.93L60.51 39\n00000d80: 2E 37 37 4C 36 30 2E 35 30 20 33 39 2E 37 36 51    .77L60.50 39.76Q\n00000d90: 35 39 2E 32 35 20 34 32 2E 31 32 20 35 35 2E 38    59.25 42.12 55.8\n00000da0: 36 20 34 32 2E 31 32 4C 35 35 2E 37 36 20 34 32    6 42.12L55.76 42\n00000db0: 2E 30 32 4C 35 35 2E 37 38 20 34 32 2E 30 35 51    .02L55.78 42.05Q\n00000dc0: 35 31 2E 39 36 20 34 32 2E 31 31 20 35 30 2E 33    51.96 42.11 50.3\n00000dd0: 33 20 33 39 2E 39 30 4C 35 30 2E 33 31 20 33 39    3 39.90L50.31 39\n00000de0: 2E 38 39 4C 35 30 2E 32 37 20 33 39 2E 38 34 51    .89L50.27 39.84Q\n00000df0: 34 39 2E 31 35 20 33 38 2E 33 30 20 34 38 2E 33    49.15 38.30 48.3\n00000e00: 35 20 33 33 2E 38 39 4C 34 38 2E 33 33 20 33 33    5 33.89L48.33 33\n00000e10: 2E 38 36 4C 34 38 2E 34 37 20 33 34 2E 30 31 51    .86L48.47 34.01Q\n00000e20: 34 38 2E 31 38 20 33 32 2E 35 31 20 34 38 2E 31    48.18 32.51 48.1\n00000e30: 38 20 33 31 2E 31 30 4C 34 38 2E 31 34 20 33 31    8 31.10L48.14 31\n00000e40: 2E 30 36 4C 34 38 2E 31 31 20 33 31 2E 30 32 51    .06L48.11 31.02Q\n00000e50: 34 38 2E 31 32 20 32 39 2E 32 34 20 34 39 2E 30    48.12 29.24 49.0\n00000e60: 33 20 32 38 2E 32 35 4C 34 38 2E 39 35 20 32 38    3 28.25L48.95 28\n00000e70: 2E 31 36 4C 34 39 2E 30 37 20 32 38 2E 32 39 51    .16L49.07 28.29Q\n00000e80: 35 30 2E 37 30 20 32 36 2E 38 33 20 35 35 2E 33    50.70 26.83 55.3\n00000e90: 34 20 32 36 2E 38 33 4C 35 35 2E 33 34 20 32 36    4 26.83L55.34 26\n00000ea0: 2E 38 33 4C 35 37 2E 31 32 20 32 37 2E 30 35 4C    .83L57.12 27.05L\n00000eb0: 35 37 2E 30 33 20 32 36 2E 39 36 51 36 30 2E 33    57.03 26.96Q60.3\n00000ec0: 30 20 32 37 2E 33 37 20 36 31 2E 36 33 20 32 39    0 27.37 61.63 29\n00000ed0: 2E 33 31 4C 36 31 2E 36 33 20 32 39 2E 33 31 4C    .31L61.63 29.31L\n00000ee0: 36 31 2E 35 33 20 32 39 2E 32 32 51 36 31 2E 37    61.53 29.22Q61.7\n00000ef0: 37 20 32 38 2E 34 33 20 36 32 2E 31 39 20 32 36    7 28.43 62.19 26\n00000f00: 2E 37 39 4C 36 32 2E 31 35 20 32 36 2E 37 35 4C    .79L62.15 26.75L\n00000f10: 36 32 2E 31 36 20 32 36 2E 37 36 51 36 33 2E 39    62.16 26.76Q63.9\n00000f20: 38 20 32 36 2E 33 37 20 36 35 2E 37 33 20 32 35    8 26.37 65.73 25\n00000f30: 2E 36 35 4C 36 35 2E 37 36 20 32 35 2E 36 38 4C    .65L65.76 25.68L\n00000f40: 36 35 2E 38 36 20 32 35 2E 37 38 51 36 33 2E 31    65.86 25.78Q63.1\n00000f50: 31 20 33 31 2E 37 39 20 36 33 2E 31 31 20 33 39    1 31.79 63.11 39\n00000f60: 2E 30 32 4C 36 33 2E 31 30 20 33 39 2E 30 31 4C    .02L63.10 39.01L\n00000f70: 36 33 2E 31 32 20 33 39 2E 30 33 51 36 33 2E 31    63.12 39.03Q63.1\n00000f80: 30 20 34 31 2E 36 37 20 36 33 2E 34 38 20 34 34    0 41.67 63.48 44\n00000f90: 2E 33 30 4C 36 33 2E 34 38 20 34 34 2E 33 30 4C    .30L63.48 44.30L\n00000fa0: 36 33 2E 35 37 20 34 34 2E 33 39 51 36 33 2E 36    63.57 44.39Q63.6\n00000fb0: 34 20 34 34 2E 39 35 20 36 33 2E 35 36 20 34 35    4 44.95 63.56 45\n00000fc0: 2E 36 34 4C 36 33 2E 36 37 20 34 35 2E 37 35 4C    .64L63.67 45.75L\n00000fd0: 36 33 2E 36 32 20 34 35 2E 37 30 51 36 33 2E 34    63.62 45.70Q63.4\n00000fe0: 34 20 34 37 2E 30 37 20 36 32 2E 32 32 20 34 37    4 47.07 62.22 47\n00000ff0: 2E 38 33 4C 36 32 2E 32 34 20 34 37 2E 38 36 4C    .83L62.24 47.86L\n00001000: 36 32 2E 31 38 20 34 37 2E 38 30 51 36 31 2E 37    62.18 47.80Q61.7\n00001010: 39 20 34 38 2E 31 36 20 36 30 2E 39 35 20 34 38    9 48.16 60.95 48\n00001020: 2E 32 38 5A 4D 36 33 2E 39 33 20 35 31 2E 32 32    .28ZM63.93 51.22\n00001030: 4C 36 33 2E 39 34 20 35 31 2E 32 33 4C 36 33 2E    L63.94 51.23L63.\n00001040: 39 31 20 35 31 2E 32 30 51 36 35 2E 34 34 20 35    91 51.20Q65.44 5\n00001050: 31 2E 33 33 20 36 36 2E 32 31 20 35 30 2E 33 37    1.33 66.21 50.37\n00001060: 4C 36 36 2E 30 36 20 35 30 2E 32 33 4C 36 36 2E    L66.06 50.23L66.\n00001070: 30 31 20 35 30 2E 31 38 51 36 36 2E 34 38 20 34    01 50.18Q66.48 4\n00001080: 39 2E 33 36 20 36 36 2E 33 37 20 34 38 2E 36 34    9.36 66.37 48.64\n00001090: 4C 36 36 2E 32 35 20 34 38 2E 35 32 4C 36 36 2E    L66.25 48.52L66.\n000010a0: 34 34 20 34 38 2E 37 30 51 36 36 2E 32 38 20 34    44 48.70Q66.28 4\n000010b0: 38 2E 30 31 20 36 36 2E 30 39 20 34 37 2E 32 35    8.01 66.09 47.25\n000010c0: 4C 36 35 2E 39 35 20 34 37 2E 31 31 4C 36 36 2E    L65.95 47.11L66.\n000010d0: 30 35 20 34 37 2E 32 31 51 36 34 2E 37 35 20 34    05 47.21Q64.75 4\n000010e0: 31 2E 39 32 20 36 35 2E 31 30 20 33 36 2E 36 36    1.92 65.10 36.66\n000010f0: 4C 36 35 2E 32 34 20 33 36 2E 38 31 4C 36 35 2E    L65.24 36.81L65.\n00001100: 31 38 20 33 36 2E 37 34 51 36 35 2E 34 33 20 33    18 36.74Q65.43 3\n00001110: 31 2E 32 31 20 36 37 2E 35 36 20 32 36 2E 33 37    1.21 67.56 26.37\n00001120: 4C 36 37 2E 35 39 20 32 36 2E 34 30 4C 36 35 2E    L67.59 26.40L65.\n00001130: 36 33 20 32 37 2E 34 39 4C 36 35 2E 35 33 20 32    63 27.49L65.53 2\n00001140: 37 2E 33 39 51 36 35 2E 37 30 20 32 36 2E 37 32    7.39Q65.70 26.72\n00001150: 20 36 35 2E 39 33 20 32 36 2E 31 35 4C 36 35 2E     65.93 26.15L65.\n00001160: 39 35 20 32 36 2E 31 37 4C 36 36 2E 34 38 20 32    95 26.17L66.48 2\n00001170: 35 2E 30 37 4C 36 36 2E 34 33 20 32 35 2E 30 32    5.07L66.43 25.02\n00001180: 51 36 34 2E 31 30 20 32 36 2E 30 30 20 36 31 2E    Q64.10 26.00 61.\n00001190: 38 39 20 32 36 2E 34 32 4C 36 31 2E 39 39 20 32    89 26.42L61.99 2\n000011a0: 36 2E 35 32 4C 36 31 2E 38 39 20 32 36 2E 34 32    6.52L61.89 26.42\n000011b0: 51 36 31 2E 35 39 20 32 37 2E 32 39 20 36 31 2E    Q61.59 27.29 61.\n000011c0: 34 34 20 32 38 2E 33 32 4C 36 31 2E 34 31 20 32    44 28.32L61.41 2\n000011d0: 38 2E 33 30 4C 36 31 2E 33 38 20 32 38 2E 32 36    8.30L61.38 28.26\n000011e0: 51 35 39 2E 32 37 20 32 36 2E 33 35 20 35 35 2E    Q59.27 26.35 55.\n000011f0: 32 34 20 32 36 2E 33 35 4C 35 35 2E 32 38 20 32    24 26.35L55.28 2\n00001200: 36 2E 33 39 4C 35 33 2E 34 38 20 32 36 2E 33 34    6.39L53.48 26.34\n00001210: 4C 35 33 2E 36 31 20 32 36 2E 34 38 51 35 30 2E    L53.61 26.48Q50.\n00001220: 34 31 20 32 36 2E 35 31 20 34 38 2E 37 33 20 32    41 26.51 48.73 2\n00001230: 37 2E 39 32 4C 34 38 2E 36 36 20 32 37 2E 38 34    7.92L48.66 27.84\n00001240: 4C 34 38 2E 35 34 20 32 37 2E 37 32 51 34 37 2E    L48.54 27.72Q47.\n00001250: 37 33 20 32 38 2E 38 32 20 34 37 2E 37 37 20 33    73 28.82 47.77 3\n00001260: 30 2E 37 32 4C 34 37 2E 36 39 20 33 30 2E 36 34    0.72L47.69 30.64\n00001270: 4C 34 37 2E 37 37 20 33 30 2E 37 33 51 34 37 2E    L47.77 30.73Q47.\n00001280: 37 39 20 33 33 2E 31 38 20 34 38 2E 38 32 20 33    79 33.18 48.82 3\n00001290: 37 2E 34 34 4C 34 38 2E 37 39 20 33 37 2E 34 31    7.44L48.79 37.41\n000012a0: 4C 34 38 2E 38 39 20 33 37 2E 35 31 51 34 39 2E    L48.89 37.51Q49.\n000012b0: 33 38 20 33 39 2E 34 35 20 35 30 2E 35 39 20 34    38 39.45 50.59 4\n000012c0: 30 2E 38 35 4C 35 30 2E 36 33 20 34 30 2E 38 39    0.85L50.63 40.89\n000012d0: 4C 35 30 2E 38 38 20 34 31 2E 31 34 4C 35 30 2E    L50.88 41.14L50.\n000012e0: 39 32 20 34 31 2E 31 38 4C 35 30 2E 39 34 20 34    92 41.18L50.94 4\n000012f0: 31 2E 32 30 51 35 31 2E 39 37 20 34 33 2E 34 31    1.20Q51.97 43.41\n00001300: 20 35 34 2E 35 36 20 34 33 2E 39 34 4C 35 34 2E     54.56 43.94L54.\n00001310: 35 37 20 34 33 2E 39 35 4C 35 34 2E 35 38 20 34    57 43.95L54.58 4\n00001320: 33 2E 39 37 51 35 35 2E 39 37 20 34 34 2E 32 35    3.97Q55.97 44.25\n00001330: 20 35 37 2E 34 32 20 34 34 2E 32 39 4C 35 37 2E     57.42 44.29L57.\n00001340: 33 37 20 34 34 2E 32 34 4C 35 37 2E 35 35 20 34    37 44.24L57.55 4\n00001350: 34 2E 34 33 51 35 39 2E 32 35 20 34 34 2E 34 31    4.43Q59.25 44.41\n00001360: 20 36 30 2E 33 32 20 34 34 2E 30 33 4C 36 30 2E     60.32 44.03L60.\n00001370: 32 31 20 34 33 2E 39 33 4C 36 30 2E 33 33 20 34    21 43.93L60.33 4\n00001380: 34 2E 30 34 51 35 39 2E 36 38 20 34 35 2E 35 36    4.04Q59.68 45.56\n00001390: 20 35 37 2E 30 32 20 34 35 2E 39 30 4C 35 36 2E     57.02 45.90L56.\n000013a0: 39 34 20 34 35 2E 38 33 4C 35 37 2E 30 33 20 34    94 45.83L57.03 4\n000013b0: 35 2E 39 32 51 35 35 2E 39 31 20 34 36 2E 30 32    5.92Q55.91 46.02\n000013c0: 20 35 35 2E 32 33 20 34 36 2E 30 32 4C 35 35 2E     55.23 46.02L55.\n000013d0: 32 32 20 34 36 2E 30 32 4C 35 34 2E 39 35 20 34    22 46.02L54.95 4\n000013e0: 36 2E 31 33 4C 35 34 2E 39 36 20 34 36 2E 31 33    6.13L54.96 46.13\n000013f0: 51 35 32 2E 30 39 20 34 36 2E 30 38 20 35 30 2E    Q52.09 46.08 50.\n00001400: 34 31 20 34 35 2E 31 32 4C 35 30 2E 33 34 20 34    41 45.12L50.34 4\n00001410: 35 2E 30 35 4C 34 38 2E 37 34 20 34 36 2E 38 38    5.05L48.74 46.88\n00001420: 4C 34 38 2E 37 33 20 34 36 2E 38 37 51 34 37 2E    L48.73 46.87Q47.\n00001430: 38 33 20 34 37 2E 36 34 20 34 36 2E 39 39 20 34    83 47.64 46.99 4\n00001440: 38 2E 35 39 4C 34 36 2E 39 33 20 34 38 2E 35 33    8.59L46.93 48.53\n00001450: 4C 34 36 2E 39 39 20 34 38 2E 36 30 51 34 38 2E    L46.99 48.60Q48.\n00001460: 30 33 20 34 39 2E 31 38 20 34 39 2E 30 32 20 34    03 49.18 49.02 4\n00001470: 39 2E 33 37 4C 34 38 2E 39 37 20 34 39 2E 33 32    9.37L48.97 49.32\n00001480: 4C 34 38 2E 31 39 20 35 30 2E 32 39 4C 34 38 2E    L48.19 50.29L48.\n00001490: 30 34 20 35 30 2E 31 34 51 35 30 2E 38 39 20 35    04 50.14Q50.89 5\n000014a0: 31 2E 33 36 20 35 36 2E 35 33 20 35 31 2E 33 36    1.36 56.53 51.36\n000014b0: 4C 35 36 2E 34 32 20 35 31 2E 32 35 4C 35 36 2E    L56.42 51.25L56.\n000014c0: 36 30 20 35 31 2E 32 30 4C 35 36 2E 37 31 20 35    60 51.20L56.71 5\n000014d0: 31 2E 33 31 51 36 30 2E 33 32 20 35 31 2E 33 30    1.31Q60.32 51.30\n000014e0: 20 36 33 2E 39 30 20 35 31 2E 31 39 5A 4D 35 37     63.90 51.19ZM57\n000014f0: 2E 39 37 20 33 32 2E 30 39 4C 35 37 2E 38 37 20    .97 32.09L57.87 \n00001500: 33 31 2E 39 39 4C 35 37 2E 39 37 20 33 32 2E 30    31.99L57.97 32.0\n00001510: 38 51 35 39 2E 31 34 20 33 31 2E 38 39 20 36 30    8Q59.14 31.89 60\n00001520: 2E 30 36 20 33 32 2E 33 31 4C 36 30 2E 30 38 20    .06 32.31L60.08 \n00001530: 33 32 2E 33 33 4C 36 30 2E 31 39 20 33 32 2E 34    32.33L60.19 32.4\n00001540: 34 51 36 30 2E 33 33 20 33 32 2E 38 38 20 36 30    4Q60.33 32.88 60\n00001550: 2E 34 30 20 33 33 2E 35 37 4C 36 30 2E 33 34 20    .40 33.57L60.34 \n00001560: 33 33 2E 35 30 4C 36 30 2E 33 37 20 33 33 2E 35    33.50L60.37 33.5\n00001570: 34 51 36 30 2E 33 37 20 33 33 2E 38 31 20 36 30    4Q60.37 33.81 60\n00001580: 2E 33 34 20 33 34 2E 37 32 4C 36 30 2E 33 35 20    .34 34.72L60.35 \n00001590: 33 34 2E 37 33 4C 36 30 2E 34 35 20 33 34 2E 38    34.73L60.45 34.8\n000015a0: 34 51 36 30 2E 33 33 20 33 36 2E 36 39 20 35 39    4Q60.33 36.69 59\n000015b0: 2E 32 32 20 33 37 2E 39 38 4C 35 39 2E 31 38 20    .22 37.98L59.18 \n000015c0: 33 37 2E 39 35 4C 35 39 2E 32 34 20 33 38 2E 30    37.95L59.24 38.0\n000015d0: 31 51 35 38 2E 31 32 20 33 39 2E 34 37 20 35 36    1Q58.12 39.47 56\n000015e0: 2E 32 32 20 33 39 2E 34 33 4C 35 36 2E 30 39 20    .22 39.43L56.09 \n000015f0: 33 39 2E 33 30 4C 35 36 2E 31 33 20 33 39 2E 33    39.30L56.13 39.3\n00001600: 34 51 35 34 2E 36 36 20 33 39 2E 32 34 20 35 33    4Q54.66 39.24 53\n00001610: 2E 38 32 20 33 38 2E 38 33 4C 35 33 2E 39 32 20    .82 38.83L53.92 \n00001620: 33 38 2E 39 33 4C 35 33 2E 38 35 20 33 38 2E 38    38.93L53.85 38.8\n00001630: 36 51 35 33 2E 33 38 20 33 37 2E 36 32 20 35 33    6Q53.38 37.62 53\n00001640: 2E 33 34 20 33 36 2E 36 30 4C 35 33 2E 34 33 20    .34 36.60L53.43 \n00001650: 33 36 2E 36 38 4C 35 33 2E 34 31 20 33 36 2E 36    36.68L53.41 36.6\n00001660: 36 51 35 33 2E 32 34 20 33 32 2E 32 37 20 35 37    6Q53.24 32.27 57\n00001670: 2E 38 35 20 33 31 2E 39 37 5A 22 2F 3E 3C 70 61    .85 31.97Z\"/>00001680: 74 68 20 64 3D 22 4D 31 37 20 33 36 20 43 36 37    th d=\"M17 36 C67\n00001690: 20 34 32 2C 35 39 20 32 38 2C 31 32 39 20 33 39     42,59 28,129 39\n000016a0: 22 20 73 74 72 6F 6B 65 3D 22 23 62 63 38 63 65    \" stroke=\"#bc8ce\n000016b0: 63 22 20 66 69 6C 6C 3D 22 6E 6F 6E 65 22 2F 3E    c\" fill=\"none\"/>\n000016c0: 3C 70 61 74 68 20 66 69 6C 6C 3D 22 23 63 63 65    00001be0: 22 23 63 34 37 36 64 66 22 20 64 3D 22 4D 33 37    \"#c476df\" d=\"M37\n00001bf0: 2E 33 38 20 32 33 2E 31 31 4C 33 37 2E 33 33 20    .38 23.11L37.33 \n00001c00: 32 33 2E 30 36 4C 33 37 2E 33 34 20 32 33 2E 30    23.06L37.34 23.0\n00001c10: 37 51 33 35 2E 34 39 20 32 35 2E 37 35 20 33 32    7Q35.49 25.75 32\n00001c20: 2E 38 33 20 33 31 2E 33 39 4C 33 32 2E 37 35 20    .83 31.39L32.75 \n00001c30: 33 31 2E 33 31 4C 33 30 2E 39 34 20 33 35 2E 37    31.31L30.94 35.7\n00001c40: 34 4C 33 30 2E 38 31 20 33 35 2E 36 31 51 33 30    4L30.81 35.61Q30\n00001c50: 2E 30 32 20 33 37 2E 36 30 20 32 38 2E 36 39 20    .02 37.60 28.69 \n00001c60: 33 39 2E 38 35 4C 32 38 2E 37 31 20 33 39 2E 38    39.85L28.71 39.8\n00001c70: 37 4C 32 38 2E 36 31 20 33 39 2E 37 37 51 32 39    7L28.61 39.77Q29\n00001c80: 2E 31 35 20 33 39 2E 38 36 20 32 37 2E 34 38 20    .15 39.86 27.48 \n00001c90: 33 39 2E 39 30 4C 32 37 2E 35 30 20 33 39 2E 39    39.90L27.50 39.9\n00001ca0: 32 4C 32 37 2E 34 31 20 33 39 2E 38 33 51 32 37    2L27.41 39.83Q27\n00001cb0: 2E 33 37 20 33 39 2E 37 38 20 32 36 2E 31 31 20    .37 39.78 26.11 \n00001cc0: 33 39 2E 37 38 4C 32 36 2E 32 34 20 33 39 2E 39    39.78L26.24 39.9\n00001cd0: 31 4C 32 36 2E 32 34 20 33 39 2E 39 32 51 32 35    1L26.24 39.92Q25\n00001ce0: 2E 34 33 20 33 38 2E 33 34 20 32 32 2E 35 30 20    .43 38.34 22.50 \n00001cf0: 33 31 2E 31 38 4C 32 32 2E 35 35 20 33 31 2E 32    31.18L22.55 31.2\n00001d00: 34 4C 32 32 2E 35 31 20 33 31 2E 32 30 51 32 30    4L22.51 31.20Q20\n00001d10: 2E 33 36 20 32 35 2E 38 35 20 31 38 2E 32 36 20    .36 25.85 18.26 \n00001d20: 32 32 2E 38 34 4C 31 38 2E 31 36 20 32 32 2E 37    22.84L18.16 22.7\n00001d30: 34 4C 31 38 2E 32 36 20 32 32 2E 38 34 51 31 39    4L18.26 22.84Q19\n00001d40: 2E 30 34 20 32 35 2E 39 34 20 31 39 2E 30 34 20    .04 25.94 19.04 \n00001d50: 32 39 2E 31 30 4C 31 39 2E 30 32 20 32 39 2E 30    29.10L19.02 29.0\n00001d60: 37 4C 31 38 2E 39 38 20 32 39 2E 30 34 51 31 39    7L18.98 29.04Q19\n00001d70: 2E 30 36 20 33 35 2E 36 33 20 31 36 2E 30 39 20    .06 35.63 16.09 \n00001d80: 34 31 2E 31 39 4C 31 35 2E 39 38 20 34 31 2E 30    41.19L15.98 41.0\n00001d90: 37 4C 31 36 2E 30 33 20 34 31 2E 31 33 51 31 34    7L16.03 41.13Q14\n00001da0: 2E 36 35 20 34 31 2E 34 32 20 31 32 2E 32 39 20    .65 41.42 12.29 \n00001db0: 34 32 2E 31 34 4C 31 32 2E 32 37 20 34 32 2E 31    42.14L12.27 42.1\n00001dc0: 32 4C 31 32 2E 32 38 20 34 32 2E 31 34 51 31 36    2L12.28 42.14Q16\n00001dd0: 2E 30 32 20 33 36 2E 35 30 20 31 36 2E 30 32 20    .02 36.50 16.02 \n00001de0: 32 39 2E 32 37 4C 31 35 2E 39 39 20 32 39 2E 32    29.27L15.99 29.2\n00001df0: 34 4C 31 35 2E 39 36 20 32 39 2E 32 32 51 31 35    4L15.96 29.22Q15\n00001e00: 2E 39 38 20 32 30 2E 32 39 20 31 30 2E 35 38 20    .98 20.29 10.58 \n00001e10: 31 33 2E 33 33 4C 31 30 2E 36 30 20 31 33 2E 33    13.33L10.60 13.3\n00001e20: 35 4C 31 30 2E 35 38 20 31 33 2E 33 33 51 31 32    5L10.58 13.33Q12\n00001e30: 2E 32 32 20 31 34 2E 30 35 20 31 34 2E 35 38 20    .22 14.05 14.58 \n00001e40: 31 34 2E 37 34 4C 31 34 2E 37 32 20 31 34 2E 38    14.74L14.72 14.8\n00001e50: 38 4C 31 34 2E 36 39 20 31 34 2E 38 35 51 32 31    8L14.69 14.85Q21\n00001e60: 2E 37 35 20 32 31 2E 36 30 20 32 37 2E 38 34 20    .75 21.60 27.84 \n00001e70: 33 34 2E 39 33 4C 32 37 2E 38 36 20 33 34 2E 39    34.93L27.86 34.9\n00001e80: 35 4C 32 37 2E 37 37 20 33 34 2E 38 36 51 33 31    5L27.77 34.86Q31\n00001e90: 2E 31 39 20 32 37 2E 37 37 20 33 33 2E 34 30 20    .19 27.77 33.40 \n00001ea0: 32 34 2E 32 37 4C 33 33 2E 35 30 20 32 34 2E 33    24.27L33.50 24.3\n00001eb0: 37 4C 33 33 2E 34 37 20 32 34 2E 33 34 51 33 37    7L33.47 24.34Q37\n00001ec0: 2E 30 33 20 31 38 2E 35 33 20 34 30 2E 39 38 20    .03 18.53 40.98 \n00001ed0: 31 35 2E 30 37 4C 34 31 2E 30 39 20 31 35 2E 31    15.07L41.09 15.1\n00001ee0: 37 4C 34 31 2E 30 38 20 31 35 2E 31 36 51 34 32    7L41.08 15.16Q42\n00001ef0: 2E 33 31 20 31 34 2E 39 31 20 34 34 2E 36 37 20    .31 14.91 44.67 \n00001f00: 31 34 2E 31 35 4C 34 34 2E 37 32 20 31 34 2E 31    14.15L44.72 14.1\n00001f10: 39 4C 34 34 2E 37 32 20 31 34 2E 32 30 51 33 39    9L44.72 14.20Q39\n00001f20: 2E 36 31 20 32 30 2E 37 30 20 33 39 2E 36 31 20    .61 20.70 39.61 \n00001f30: 32 39 2E 33 30 4C 33 39 2E 36 31 20 32 39 2E 33    29.30L39.61 29.3\n00001f40: 30 4C 33 39 2E 37 33 20 32 39 2E 34 32 51 33 39    0L39.73 29.42Q39\n00001f50: 2E 37 33 20 33 36 2E 30 38 20 34 33 2E 31 35 20    .73 36.08 43.15 \n00001f60: 34 31 2E 36 30 4C 34 33 2E 31 34 20 34 31 2E 35    41.60L43.14 41.5\n00001f70: 39 4C 34 33 2E 30 30 20 34 31 2E 34 34 51 34 31    9L43.00 41.44Q41\n00001f80: 2E 37 32 20 34 31 2E 32 30 20 33 38 2E 39 38 20    .72 41.20 38.98 \n00001f90: 34 30 2E 35 39 4C 33 39 2E 30 30 20 34 30 2E 36    40.59L39.00 40.6\n00001fa0: 31 4C 33 39 2E 30 39 20 34 30 2E 36 39 51 33 36    1L39.09 40.69Q36\n00001fb0: 2E 37 32 20 33 35 2E 38 39 20 33 36 2E 37 32 20    .72 35.89 36.72 \n00001fc0: 32 39 2E 39 32 4C 33 36 2E 37 34 20 32 39 2E 39    29.92L36.74 29.9\n00001fd0: 33 4C 33 36 2E 37 32 20 32 39 2E 39 31 51 33 36    3L36.72 29.91Q36\n00001fe0: 2E 36 36 20 32 36 2E 34 33 20 33 37 2E 33 35 20    .66 26.43 37.35 \n00001ff0: 32 33 2E 30 38 5A 4D 33 38 2E 38 33 20 34 31 2E    23.08ZM38.83 41.\n00002000: 30 30 4C 33 38 2E 38 33 20 34 31 2E 30 30 4C 33    00L38.83 41.00L3\n00002010: 38 2E 38 37 20 34 31 2E 30 35 51 33 39 2E 35 39    8.87 41.05Q39.59\n00002020: 20 34 31 2E 32 30 20 34 31 2E 30 34 20 34 31 2E     41.20 41.04 41.\n00002030: 34 36 4C 34 30 2E 39 38 20 34 31 2E 34 31 4C 34    46L40.98 41.41L4\n00002040: 30 2E 38 36 20 34 31 2E 32 39 51 34 31 2E 33 33    0.86 41.29Q41.33\n00002050: 20 34 32 2E 30 36 20 34 32 2E 32 38 20 34 33 2E     42.06 42.28 43.\n00002060: 35 34 4C 34 32 2E 34 33 20 34 33 2E 36 39 4C 34    54L42.43 43.69L4\n00002070: 32 2E 33 36 20 34 33 2E 36 32 51 34 34 2E 34 32    2.36 43.62Q44.42\n00002080: 20 34 33 2E 39 37 20 34 37 2E 38 38 20 34 35 2E     43.97 47.88 45.\n00002090: 31 38 4C 34 37 2E 39 36 20 34 35 2E 32 37 4C 34    18L47.96 45.27L4\n000020a0: 37 2E 39 33 20 34 35 2E 32 33 51 34 31 2E 37 36    7.93 45.23Q41.76\n000020b0: 20 33 38 2E 39 39 20 34 31 2E 37 36 20 32 39 2E     38.99 41.76 29.\n000020c0: 31 37 4C 34 31 2E 36 32 20 32 39 2E 30 33 4C 34    17L41.62 29.03L4\n000020d0: 31 2E 37 36 20 32 39 2E 31 36 51 34 31 2E 37 32    1.76 29.16Q41.72\n000020e0: 20 32 31 2E 34 30 20 34 36 2E 31 30 20 31 35 2E     21.40 46.10 15.\n000020f0: 32 37 4C 34 35 2E 39 39 20 31 35 2E 31 36 4C 34    27L45.99 15.16L4\n00002100: 33 2E 37 38 20 31 35 2E 38 35 4C 34 33 2E 37 39    3.78 15.85L43.79\n00002110: 20 31 35 2E 38 35 51 34 34 2E 38 35 20 31 34 2E     15.85Q44.85 14.\n00002120: 33 36 20 34 35 2E 35 30 20 31 33 2E 34 39 4C 34    36 45.50 13.49L4\n00002130: 35 2E 34 35 20 31 33 2E 34 34 4C 34 35 2E 35 34    5.45 13.44L45.54\n00002140: 20 31 33 2E 35 33 51 34 33 2E 36 31 20 31 34 2E     13.53Q43.61 14.\n00002150: 31 32 20 34 30 2E 39 39 20 31 34 2E 36 35 4C 34    12 40.99 14.65L4\n00002160: 31 2E 30 30 20 31 34 2E 36 37 4C 34 30 2E 39 38    1.00 14.67L40.98\n00002170: 20 31 34 2E 36 34 51 33 34 2E 31 38 20 32 30 2E     14.64Q34.18 20.\n00002180: 37 31 20 32 38 2E 31 32 20 33 33 2E 33 31 4C 32    71 28.12 33.31L2\n00002190: 38 2E 32 30 20 33 33 2E 33 38 4C 32 38 2E 31 39    8.20 33.38L28.19\n000021a0: 20 33 33 2E 33 37 51 32 32 2E 39 39 20 32 32 2E     33.37Q22.99 22.\n000021b0: 33 39 20 31 38 2E 30 34 20 31 37 2E 31 34 4C 31    39 18.04 17.14L1\n000021c0: 38 2E 30 34 20 31 37 2E 31 33 4C 31 38 2E 30 34    8.04 17.13L18.04\n000021d0: 20 31 37 2E 31 33 51 31 37 2E 37 31 20 31 37 2E     17.13Q17.71 17.\n000021e0: 31 31 20 31 37 2E 31 34 20 31 37 2E 30 30 4C 31    11 17.14 17.00L1\n000021f0: 37 2E 30 35 20 31 36 2E 39 31 4C 31 35 2E 38 37    7.05 16.91L15.87\n00002200: 20 31 35 2E 36 35 4C 31 35 2E 38 32 20 31 35 2E     15.65L15.82 15.\n00002210: 36 30 51 31 35 2E 33 39 20 31 35 2E 30 39 20 31    60Q15.39 15.09 1\n00002220: 34 2E 37 31 20 31 34 2E 34 38 4C 31 34 2E 36 36    4.71 14.48L14.66\n00002230: 20 31 34 2E 34 34 4C 31 34 2E 36 37 20 31 34 2E     14.44L14.67 14.\n00002240: 34 35 51 31 31 2E 36 31 20 31 33 2E 34 34 20 39    45Q11.61 13.44 9\n00002250: 2E 38 32 20 31 32 2E 37 32 4C 39 2E 38 34 20 31    .82 12.72L9.84 1\n00002260: 32 2E 37 34 4C 39 2E 37 38 20 31 32 2E 36 38 51    2.74L9.78 12.68Q\n00002270: 31 35 2E 37 34 20 31 39 2E 38 36 20 31 35 2E 37    15.74 19.86 15.7\n00002280: 34 20 32 39 2E 32 36 4C 31 35 2E 37 38 20 32 39    4 29.26L15.78 29\n00002290: 2E 33 30 4C 31 35 2E 38 31 20 32 39 2E 33 33 51    .30L15.81 29.33Q\n000022a0: 31 35 2E 37 33 20 33 36 2E 38 37 20 31 31 2E 35    15.73 36.87 11.5\n000022b0: 38 20 34 32 2E 37 33 4C 31 31 2E 37 31 20 34 32    8 42.73L11.71 42\n000022c0: 2E 38 35 4C 31 31 2E 36 35 20 34 32 2E 38 30 51    .85L11.65 42.80Q\n000022d0: 31 32 2E 33 31 20 34 32 2E 35 34 20 31 33 2E 36    12.31 42.54 13.6\n000022e0: 30 20 34 32 2E 31 32 4C 31 33 2E 36 38 20 34 32    0 42.12L13.68 42\n000022f0: 2E 32 30 4C 31 33 2E 36 30 20 34 32 2E 31 32 51    .20L13.60 42.12Q\n00002300: 31 33 2E 35 39 20 34 32 2E 35 30 20 31 32 2E 31    13.59 42.50 12.1\n00002310: 39 20 34 34 2E 35 39 4C 31 32 2E 31 33 20 34 34    9 44.59L12.13 44\n00002320: 2E 35 33 4C 31 32 2E 30 37 20 34 34 2E 34 38 51    .53L12.07 44.48Q\n00002330: 31 33 2E 39 32 20 34 34 2E 30 34 20 31 37 2E 34    13.92 44.04 17.4\n00002340: 32 20 34 33 2E 32 37 4C 31 37 2E 34 36 20 34 33    2 43.27L17.46 43\n00002350: 2E 33 32 4C 31 37 2E 33 35 20 34 33 2E 32 30 51    .32L17.35 43.20Q\n00002360: 32 31 2E 30 37 20 33 36 2E 31 36 20 32 30 2E 38    21.07 36.16 20.8\n00002370: 38 20 32 38 2E 33 39 4C 32 30 2E 38 37 20 32 38    8 28.39L20.87 28\n00002380: 2E 33 38 4C 32 30 2E 38 36 20 32 38 2E 33 36 51    .38L20.86 28.36Q\n00002390: 32 32 2E 34 34 20 33 32 2E 34 32 20 32 35 2E 39    22.44 32.42 25.9\n000023a0: 31 20 34 30 2E 33 30 4C 32 35 2E 39 30 20 34 30    1 40.30L25.90 40\n000023b0: 2E 33 30 4C 32 35 2E 39 37 20 34 30 2E 33 36 51    .30L25.97 40.36Q\n000023c0: 32 36 2E 31 34 20 34 30 2E 32 33 20 32 36 2E 33    26.14 40.23 26.3\n000023d0: 37 20 34 30 2E 32 33 4C 32 36 2E 33 37 20 34 30    7 40.23L26.37 40\n000023e0: 2E 32 33 4C 32 36 2E 38 38 20 34 30 2E 32 31 4C    .23L26.88 40.21L\n000023f0: 32 36 2E 38 35 20 34 30 2E 31 38 51 32 37 2E 34    26.85 40.18Q27.4\n00002400: 32 20 34 30 2E 39 38 20 32 38 2E 32 32 20 34 32    2 40.98 28.22 42\n00002410: 2E 32 38 4C 32 38 2E 32 33 20 34 32 2E 32 38 4C    .28L28.23 42.28L\n00002420: 32 38 2E 32 31 20 34 32 2E 32 36 51 32 39 2E 38    28.21 42.26Q29.8\n00002430: 38 20 34 32 2E 33 30 20 32 39 2E 38 38 20 34 32    8 42.30 29.88 42\n00002440: 2E 33 30 4C 32 39 2E 38 32 20 34 32 2E 32 34 4C    .30L29.82 42.24L\n00002450: 32 39 2E 37 39 20 34 32 2E 32 31 51 33 30 2E 37    29.79 42.21Q30.7\n00002460: 31 20 34 32 2E 31 30 20 33 31 2E 33 35 20 34 32    1 42.10 31.35 42\n00002470: 2E 31 37 4C 33 31 2E 33 39 20 34 32 2E 32 31 4C    .17L31.39 42.21L\n00002480: 33 31 2E 34 32 20 34 32 2E 32 34 51 33 33 2E 30    31.42 42.24Q33.0\n00002490: 35 20 33 38 2E 32 37 20 33 36 2E 34 30 20 33 30    5 38.27 36.40 30\n000024a0: 2E 32 37 4C 33 36 2E 33 30 20 33 30 2E 31 38 4C    .27L36.30 30.18L\n000024b0: 33 36 2E 33 31 20 33 30 2E 31 39 51 33 36 2E 32    36.31 30.19Q36.2\n000024c0: 33 20 33 35 2E 36 36 20 33 38 2E 38 31 20 34 30    3 35.66 38.81 40\n000024d0: 2E 39 39 5A 22 2F 3E 3C 2F 73 76 67 3E             .99Z\"/></svg>\n\n ```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "project&demo",
+			"item": [
+				{
+					"name": "get all project",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": "{{blogserver}}/api/project",
+						"description": "### GET /api/project\n\nThis endpoint retrieves a list of projects.\n\n#### Request\n\nNo request body is required for this endpoint.\n\n#### Response\n\nThe response is in JSON format and follows the schema below:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Personal Blog\",\n            \"url\": \"https://blog.example.com\",\n            \"github\": \"https://github.com/example/blog\",\n            \"description\": [\n                \"vue\",\n                \"nodejs\",\n                \"html\",\n                \"css\"\n            ],\n            \"thumb\": \"https://via.placeholder.com/300x200\",\n            \"order\": 1\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Task Manager\",\n            \"url\": \"https://tasks.example.com\",\n            \"github\": \"https://github.com/example/task-manager\",\n            \"description\": [\n                \"react\",\n                \"nodejs\",\n                \"mongodb\"\n            ],\n            \"thumb\": \"https://via.placeholder.com/300x200\",\n            \"order\": 2\n        },\n        {\n            \"id\": 3,\n            \"name\": \"E-commerce Platform\",\n            \"url\": \"https://shop.example.com\",\n            \"github\": \"https://github.com/example/ecommerce\",\n            \"description\": [\n                \"vue\",\n                \"express\",\n                \"mysql\",\n                \"redis\"\n            ],\n            \"thumb\": \"https://via.placeholder.com/300x200\",\n            \"order\": 3\n        }\n    ]\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "delete project",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/project/3",
+						"description": "### Delete Project\n\nThis endpoint is used to delete a specific project with the given ID.\n\n#### Request Body\n\nThis request does not require a request body.\n\n#### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\nExample response body:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": true\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "edit project",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Demo project edit\",\r\n\t\"description\": [\r\n\t\t\"vue\",\r\n\t\t\"nodejs\",\r\n\t\t\"html\",\r\n\t\t\"jcss\"\r\n\t],\r\n\t\"url\": \"www.demo.com\",\r\n\t\"github\": \"https://github.com/\",\r\n\t\"thumb\": \"/static/uploads/big_size17432397192887246.jpg\",\r\n\t\"order\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/project/3",
+						"description": "### Update Project Details\n\nThis endpoint allows the user to update the details of a specific project by sending an HTTP PUT request to the specified URL.\n\n#### Request Body\n\n- `name` (string): The updated name of the project.\n    \n- `description` (array of strings): The updated description of the project.\n    \n- `url` (string): The updated URL of the project.\n    \n- `github` (string): The updated GitHub URL of the project.\n    \n- `thumb` (string): The updated thumbnail image of the project.\n    \n- `order` (integer): The updated order of the project.\n    \n\n#### Response\n\nUpon a successful execution, the server responds with a status code of 200 and a JSON object containing the following fields:\n\n- `code` (integer): A status code indicating the result of the operation.\n    \n- `msg` (string): A message providing additional information about the operation.\n    \n- `data` (object): An object containing the updated details of the project, including the `id`, `name`, `url`, `github`, `description`, `thumb`, and `order`."
+					},
+					"response": []
+				},
+				{
+					"name": "add project",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Demo project\",\r\n\t\"description\": [\r\n\t\t\"vue\",\r\n\t\t\"nodejs\",\r\n\t\t\"html\",\r\n\t\t\"jcss\"\r\n\t],\r\n\t\"url\": \"www.demo.com\",\r\n\t\"github\": \"https://github.com/\",\r\n\t\"thumb\": \"/static/uploads/big_size17432397192887246.jpg\",\r\n\t\"order\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/project",
+						"description": "### POST /api/project\n\nThis endpoint is used to create a new project with the provided details.\n\n#### Request Body\n\n- name (string, required): The name of the project.\n    \n- description (array of strings, required): Description of the project.\n    \n- url (string, required): The URL of the project.\n    \n- github (string, required): The GitHub repository URL of the project.\n    \n- thumb (string, required): The thumbnail image URL of the project.\n    \n- order (integer, required): The order of the project.\n    \n\n#### Response\n\nThe response is in JSON format and follows the schema below:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": {\n        \"id\": 4,\n        \"name\": \"Demo project\",\n        \"description\": \"[\\\"vue\\\",\\\"nodejs\\\",\\\"html\\\",\\\"jcss\\\"]\",\n        \"url\": \"www.demo.com\",\n        \"github\": \"https://github.com/\",\n        \"thumb\": \"/static/uploads/big_size17432397192887246.jpg\",\n        \"order\": 2\n    }\n}\n\n ```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "message",
+			"item": [
+				{
+					"name": "get comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{blogserver}}/api/comment?page=1&limit=10&blogId=2",
+							"host": [
+								"{{blogserver}}"
+							],
+							"path": [
+								"api",
+								"comment"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "blogId",
+									"value": "2"
+								}
+							]
+						},
+						"description": "# API Request: Get Blog Comments\n\n## Description\n\nThis API endpoint retrieves comments for a specific blog, with the option to paginate the results.\n\n## Request\n\n- Method: GET\n    \n- URL: {{blogserver}}/api/comment\n    \n- Headers: None\n    \n- Parameters:\n    - page (integer, required): The page number for paginating the comments.\n        \n    - limit (integer, required): The number of comments to be returned per page.\n        \n    - blogId (integer, required): The unique identifier of the blog for which comments are being fetched.\n        \n\n## Response\n\n- Status: 200 OK\n    \n- Content-Type: application/json\n    \n- Body:\n    \n    ``` json\n    {\n      \"code\": 0,\n      \"msg\": \"\",\n      \"data\": {\n        \"total\": 0,\n        \"rows\": [\n          {\n            \"id\": 0,\n            \"nickname\": \"\",\n            \"content\": \"\",\n            \"createDate\": \"\",\n            \"avatar\": \"\",\n            \"blogId\": 0,\n            \"blog\": {\n              \"id\": 0,\n              \"title\": \"\",\n              \"description\": \"\",\n              \"toc\": \"\",\n              \"htmlContent\": \"\",\n              \"thumb\": \"\",\n              \"scanNumber\": 0,\n              \"commentNumber\": 0,\n              \"createDate\": \"\",\n              \"categoryId\": 0\n            }\n          }\n        ]\n      }\n    }\n    \n     ```\n    \n\n## Note\n\n- The response contains an array of comment objects under the \"rows\" key, with each object representing a comment on the specified blog.\n    \n- The \"total\" field in the response data indicates the total number of comments available for the specified blog."
+					},
+					"response": []
+				},
+				{
+					"name": "get all comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{blogserver}}/api/comment?page=1&limit=10&blogId=all",
+							"host": [
+								"{{blogserver}}"
+							],
+							"path": [
+								"api",
+								"comment"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "blogId",
+									"value": "all"
+								}
+							]
+						},
+						"description": "# Blog Comment API\n\nThis API endpoint retrieves comments for a specific blog, with the ability to paginate the results.\n\n## Request\n\n### Endpoint\n\n`GET /api/comment`\n\n### Query Parameters\n\n- `page` (integer) - The page number for paginating the comments.\n    \n- `limit` (integer) - The number of comments to be returned per page.\n    \n- `blogId` (string) - The ID of the blog for which comments are to be retrieved. Use all to retrieved all comments\n    \n\n### Example\n\n```\n{{blogserver}}/api/comment?page=1&limit=10&blogId=all\n\n ```\n\n## Response\n\n### Body\n\nThe response will be in JSON format and will contain the following keys:\n\n- `code` (integer) - The status code of the response.\n    \n- `msg` (string) - Any additional message related to the response.\n    \n- `data` (object) - The data object containing the comment details.\n    \n    - `total` (integer) - The total number of comments available.\n        \n    - `rows` (array) - An array of comment objects, each containing the following keys:\n        \n        - `id` (integer) - The unique identifier of the comment.\n            \n        - `nickname` (string) - The nickname of the commenter.\n            \n        - `content` (string) - The content of the comment.\n            \n        - `createDate` (string) - The date and time when the comment was created.\n            \n        - `avatar` (string) - The URL of the commenter's avatar.\n            \n        - `blogId` (integer) - The ID of the blog to which the comment belongs.\n            \n        - `blog` (object) - The details of the blog to which the comment belongs, with the following keys:\n            \n            - `id` (integer) - The unique identifier of the blog.\n                \n            - `title` (string) - The title of the blog.\n                \n            - `description` (string) - The description of the blog.\n                \n            - `toc` (string) - The table of contents of the blog.\n                \n            - `htmlContent` (string) - The HTML content of the blog.\n                \n            - `thumb` (string) - The URL of the blog's thumbnail image.\n                \n            - `scanNumber` (integer) - The number of views of the blog.\n                \n            - `commentNumber` (integer) - The number of comments on the blog.\n                \n            - `createDate` (string) - The date and time when the blog was created.\n                \n            - `categoryId` (integer) - The ID of the category to which the blog belongs.\n                \n\n### Example Response\n\n``` json\n{\n  \"code\": 0,\n  \"msg\": \"\",\n  \"data\": {\n    \"total\": 0,\n    \"rows\": [\n      {\n        \"id\": 0,\n        \"nickname\": \"\",\n        \"content\": \"\",\n        \"createDate\": \"\",\n        \"avatar\": \"\",\n        \"blogId\": 0,\n        \"blog\": {\n          \"id\": 0,\n          \"title\": \"\",\n          \"description\": \"\",\n          \"toc\": \"\",\n          \"htmlContent\": \"\",\n          \"thumb\": \"\",\n          \"scanNumber\": 0,\n          \"commentNumber\": 0,\n          \"createDate\": \"\",\n          \"categoryId\": 0\n        }\n      }\n    ]\n  }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "delete comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/comment/6",
+						"description": "This endpoint sends an HTTP DELETE request to delete a specific comment with ID 6 on the blog server.\n\n### Response\n\nThe response is in JSON format with the following schema:\n\n``` json\n{ \n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": true\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "add comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nickname\": \"Mary\",\r\n    \"content\": \"This is nice article\",\r\n    \"blogId\": \"2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/comment",
+						"description": "### API Request Description\n\nThis endpoint allows users to submit a comment on a blog post. The request should be sent via an HTTP POST method to `/api/comment`.\n\n#### Request Body\n\n- `nickname` (string) - The nickname of the commenter.\n    \n- `content` (string) - The content of the comment.\n    \n- `blogId` (string) - The ID of the blog post to which the comment is being submitted.\n    \n\n### Response\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": {\n        \"id\": 9,\n        \"nickname\": \"Mary\",\n        \"content\": \"This is nice article\",\n        \"blogId\": \"2\",\n        \"createDate\": 1744562735704,\n        \"avatar\": \"/static/avatar/scare.gif\"\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "get message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{blogserver}}/api/message?page=1&limit=10",
+							"host": [
+								"{{blogserver}}"
+							],
+							"path": [
+								"api",
+								"message"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "This endpoint makes an HTTP GET request to retrieve messages from the blog server. It includes query parameters for pagination, where \"page\" specifies the page number and \"limit\" specifies the number of messages per page.\n\n### Request\n\n- Method: GET\n    \n- URL: {{blogserver}}/api/message\n    \n- Query Parameters:\n    \n    - page (number): The page number for pagination\n        \n    - limit (number): The limit of messages per page\n        \n\n### Response\n\nThe response will have a status code of 200 and a content type of \"application/json\". The response body will contain a JSON object with the following structure:\n\n``` json\n{\n  \"code\": 0,\n  \"msg\": \"\",\n  \"data\": {\n    \"total\": 0,\n    \"rows\": [\n      {\n        \"id\": 0,\n        \"nickname\": \"\",\n        \"content\": \"\",\n        \"createDate\": \"\",\n        \"avatar\": \"\",\n        \"blogId\": null\n      }\n    ]\n  }\n}\n\n ```\n\n- `code` (number): The status code of the response\n    \n- `msg` (string): A message related to the response\n    \n- `data` (object): The data object containing total count and message rows\n    \n    - `total` (number): The total count of messages\n        \n    - `rows` (array): An array of message objects\n        \n        - `id` (number): The unique identifier of the message\n            \n        - `nickname` (string): The nickname of the message sender\n            \n        - `content` (string): The content of the message\n            \n        - `createDate` (string): The date of message creation\n            \n        - `avatar` (string): The avatar of the message sender\n            \n        - `blogId` (number or null): The ID of the blog associated with the message"
+					},
+					"response": []
+				},
+				{
+					"name": "delete message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/message/3",
+						"description": "### DELETE /api/message/:id\n\nDeletes a specific message with the ID of 3 from the blog server.\n\n#### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": true\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "add message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nickname\": \"Peter\",\r\n    \"content\": \"This is nice blog\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/message",
+						"description": "### POST /api/message\n\nThis endpoint allows users to submit a message to the blog server.\n\n#### Request Body\n\n- `nickname` (string, required): The nickname of the user submitting the message.\n    \n- `content` (string, required): The content of the message being submitted.\n    \n\n#### Response\n\nThe response will be in JSON format with the following schema:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": {\n        \"id\": 10,\n        \"nickname\": \"Peter\",\n        \"content\": \"This is nice blog\",\n        \"blogId\": null,\n        \"createDate\": 1744562770890,\n        \"avatar\": \"/static/avatar/whatthat.png\"\n    }\n}\n\n ```\n\nThe response will have a status code of 200."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "setting",
+			"item": [
+				{
+					"name": "get setting",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": "{{blogserver}}/api/setting",
+						"description": "The endpoint makes an HTTP GET request to retrieve the settings from the blog server.\n\nThe response of the request can be documented as a JSON schema:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": {\n        \"id\": 1,\n        \"avatar\": \"/static/uploads/1744539621319-227866859.jpg\",\n        \"siteTitle\": \"My Blog Edit\",\n        \"github\": \"https://github.com\",\n        \"qq\": \"123456789\",\n        \"qqQrCode\": \"/static/images/qrcode.jpg\",\n        \"weixin\": \"myweixin\",\n        \"weixinQrCode\": \"/static/images/qrcode.jpg\",\n        \"mail\": \"admin@example.com\",\n        \"icp\": \"123456\",\n        \"githubName\": \"developer\",\n        \"favicon\": \"/static/images/favicon.png\"\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "edit setting",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"siteTitle\": \"My Blog Edit\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{blogserver}}/api/setting",
+						"description": "# Update Blog Settings\n\nThis endpoint allows the client to update the blog settings. The HTTP PUT request should be made to `{{blogserver}}/api/setting`.\n\n### Request Body\n\n- `Any field of the setting`\n    \n- `siteTitle` (string): The updated title for the blog.\n    \n\nExample:\n\n``` json\n{\n  \"siteTitle\": \"My Blog Edit\"\n}\n\n ```\n\n### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": {\n        \"id\": 1,\n        \"avatar\": \"/static/uploads/1744539621319-227866859.jpg\",\n        \"siteTitle\": \"My Blog Edit\",\n        \"github\": \"https://github.com\",\n        \"qq\": \"123456789\",\n        \"qqQrCode\": \"/static/images/qrcode.jpg\",\n        \"weixin\": \"myweixin\",\n        \"weixinQrCode\": \"/static/images/qrcode.jpg\",\n        \"mail\": \"admin@example.com\",\n        \"icp\": \"123456\",\n        \"githubName\": \"developer\",\n        \"favicon\": \"/static/images/favicon.png\"\n    }\n}\n\n ```\n\nThe response contains the updated blog settings with the `siteTitle` and other fields."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "upload",
+			"item": [
+				{
+					"name": "upload photo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/E:/final/DEMO/testPic/project2.jpg"
+								}
+							]
+						},
+						"url": "{{blogserver}}/api/upload",
+						"description": "# Upload File\n\nThis API endpoint allows the user to upload a file to the server.\n\n## Request\n\n- Method: POST\n    \n- URL: `/api/upload`\n    \n- Body: form-data\n    \n\n### Parameters\n\n- `file` (type: file, description: \\[description\\])\n    \n\n## Response\n\nThe response for this request is in JSON format and follows the schema below:\n\n``` json\n{\n    \"code\": 0,\n    \"msg\": \"\",\n    \"data\": \"/static/uploads/1744563124217-407657429.jpg\"\n}\n\n ```"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

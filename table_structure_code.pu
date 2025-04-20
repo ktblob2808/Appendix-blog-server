@@ -1,0 +1,119 @@
+@startuml
+!define Table(name,desc) entity name << (T,#FFAAAA) desc >>
+!define Column(name,type,desc) name : type <<desc>>
+
+skinparam table {
+    BackgroundColor #FEFECE
+    BorderColor #333333
+    HeaderBackgroundColor #9966CC
+    HeaderFontColor white
+    FontName Courier
+    FontSize 12
+}
+
+' Table Definitions
+entity admin {
+  * id : INT
+  --
+  loginId : VARCHAR(45)
+  name : VARCHAR(255)
+  loginPwd : VARCHAR(45)
+  --
+  PRIMARY KEY (id)
+  UNIQUE INDEX id_UNIQUE (id)
+}
+
+entity banner {
+  * id : INT
+  --
+  midImg : VARCHAR(255)
+  bigImg : VARCHAR(255)
+  title : VARCHAR(255)
+  description : VARCHAR(255)
+  --
+  PRIMARY KEY (id)
+}
+
+entity blogtype {
+  * id : INT
+  --
+  name : VARCHAR(255)
+  articleCount : INT
+  order : INT
+  --
+  PRIMARY KEY (id)
+}
+
+entity blog {
+  * id : INT
+  --
+  title : VARCHAR(255)
+  description : TEXT
+  toc : TEXT
+  htmlContent : TEXT
+  thumb : VARCHAR(255)
+  scanNumber : INT
+  commentNumber : INT
+  createDate : VARCHAR(255)
+  categoryId : INT
+  --
+  PRIMARY KEY (id)
+  KEY categoryId (categoryId)
+}
+
+entity demo {
+  * id : INT
+  --
+  name : VARCHAR(255)
+  url : VARCHAR(255)
+  github : VARCHAR(255)
+  description : VARCHAR(255)
+  thumb : VARCHAR(255)
+  order : INT
+  --
+  PRIMARY KEY (id)
+}
+
+entity message {
+  * id : INT
+  --
+  nickname : VARCHAR(255)
+  content : VARCHAR(255)
+  createDate : VARCHAR(255)
+  avatar : VARCHAR(255)
+  blogId : INT
+  --
+  PRIMARY KEY (id)
+  KEY blogId (blogId)
+}
+
+entity setting {
+  * id : INT
+  --
+  avatar : VARCHAR(255)
+  siteTitle : VARCHAR(255)
+  github : VARCHAR(255)
+  qq : VARCHAR(255)
+  qqQrCode : VARCHAR(255)
+  weixin : VARCHAR(255)
+  weixinQrCode : VARCHAR(255)
+  mail : VARCHAR(255)
+  icp : VARCHAR(255)
+  githubName : VARCHAR(255)
+  favicon : VARCHAR(255)
+  --
+  PRIMARY KEY (id)
+}
+
+entity about {
+  * id : INT
+  --
+  url : VARCHAR(255)
+  --
+  PRIMARY KEY (id)
+}
+
+' Relationships
+blog }o--|| blogtype : "categoryId"
+message }o--|| blog : "blogId"
+@enduml
